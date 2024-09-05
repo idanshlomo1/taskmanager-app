@@ -3,10 +3,12 @@ import { Montserrat as FontSans } from "next/font/google"
 import "./globals.css";
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "next-themes";
-import Footer from "@/components/Footer";
-import Sidebar from "@/components/Sidebar";
 import { GlobalContextProvider } from "@/lib/globalContext";
-
+import { Toaster } from "react-hot-toast";
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
+import NextTopLoader from 'nextjs-toploader';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,30 +29,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          " font-sans antialiased ",
-          fontSans.variable
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={cn(
+            " font-sans antialiased ",
+            fontSans.variable
+          )}
         >
-          <GlobalContextProvider>
-            <div className="h-[100vh]">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <GlobalContextProvider>
               {children}
-            </div>
-            {/* <Footer /> */}
-          </GlobalContextProvider>
+              <Toaster
+                position="top-center"
+                reverseOrder={false}
+              />
+              <NextTopLoader
+                height={2}
+                showSpinner={false}
+                easing="cubic-bezier(0.53,0.21,0,1)"
+              />
+              
+            </GlobalContextProvider>
 
-        </ThemeProvider>
+          </ThemeProvider>
 
-
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

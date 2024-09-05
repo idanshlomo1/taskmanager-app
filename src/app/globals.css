@@ -63,8 +63,15 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Montserrat', sans-serif;
   }
   body {
     @apply bg-background text-foreground;
   }
 }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+
+
