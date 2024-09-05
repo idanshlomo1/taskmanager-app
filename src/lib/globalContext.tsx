@@ -103,7 +103,7 @@ export const GlobalContextProvider: React.FC<{ children: ReactNode }> = ({ child
     useEffect(() => {
         setTimeout(() => {
             setIsReady(true);
-        }, 250);
+        }, 500);
     }, []);
 
     if (!isReady) {

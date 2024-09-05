@@ -1,6 +1,6 @@
 "use client"
 import { cn } from '@/lib/utils'
-import { Check, Divide, Home, Icon, List, LogOutIcon, LucideLogOut, MenuIcon, Pencil } from 'lucide-react'
+import { Check, CheckIcon, Divide, Home, Icon, List, LogOutIcon, LucideLogOut, MenuIcon, Pencil, XIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -28,13 +28,13 @@ const Sidebar = () => {
         {
             id: 3,
             title: "Completed",
-            icon: <Check size={20} />,
+            icon: <CheckIcon size={20} />,
             link: "/completed"
         },
         {
             id: 4,
-            title: "Do It Now",
-            icon: <Pencil size={20} />,
+            title: "Incomplete",
+            icon: <XIcon size={20} />,
             link: "/incomplete"
         },
     ]
@@ -64,7 +64,7 @@ const Sidebar = () => {
 
                     <div
                         className="flex gap-4 items-center justify-center py-4 rounded-lg "
-                    // Add click handler here
+
                     >
                         <div className='h-[70px] border w-[70px] rounded-full flex items-center justify-center overflow-hidden'>
                             <Image
@@ -118,26 +118,28 @@ const Sidebar = () => {
                     </SheetTrigger>
                     <SheetContent side="left" className="w-64">
                         <DialogTitle className='font-bold'>Task Manager</DialogTitle>
-                        <div className='relative w-full h-full rounded-lg px-4 py-12 flex flex-col justify-between'>
-                            <SheetClose>
-                                <div
-                                    className="flex gap-4 items-center justify-center py-4 rounded-lg hover:opacity-80 cursor-pointer duration-200"
-                                    onClick={handleOpenUserProfile}
-                                >
+                        <div className='relative w-full h-full px-4 py-12 flex flex-col justify-between'>
+
+                            <div
+                                className="flex gap-4 items-center justify-center py-4  "
+                            >
+                                <SheetClose className='rounded-full' onClick={handleOpenUserProfile}>
                                     <Image
-                                        width={70}
-                                        height={70}
+
+                                        width={80}
+                                        height={80}
                                         alt="profile"
                                         src={`${imageUrl}`}
                                         priority
-                                        className="rounded-full border-2"
+                                        className="rounded-full object-cover hover:opacity-80 cursor-pointer duration-200"
                                     />
-                                    <p className="font-medium flex items-start flex-col">
-                                        <span>{firstName}</span>
-                                        <span>{lastName}</span>
-                                    </p>
-                                </div>
-                            </SheetClose>
+                                </SheetClose>
+                                <p className="font-medium flex items-start flex-col">
+                                    <span>{firstName}</span>
+                                    <span>{lastName}</span>
+                                </p>
+                            </div>
+
 
                             <ul>
                                 {navItems.map((navItem) => (
