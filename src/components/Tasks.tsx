@@ -18,7 +18,7 @@ const Tasks = ({ title, tasks }: Props) => {
     const skeletonArray = Array(3).fill(0); // Adjust the number of skeletons based on your grid
 
     return (
-        <div className='w-full border rounded-lg p-8 flex flex-col h-[70vh]'>
+        <div className='w-full border rounded-lg p-8 flex flex-col h-[80vh]'>
             <div className='flex w-full gap-4 md:gap-0 justify-between items-center mb-8'>
                 <h1 className='text-2xl font-bold'>
                     {title}

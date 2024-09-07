@@ -57,7 +57,7 @@ const Sidebar = () => {
     return (
         <nav >
             {/* md+ screens */}
-            <div className='hidden md:block h-[70vh] rounded-lg border overflow-y-auto'>
+            <div className='hidden md:block h-[80vh] rounded-lg border overflow-y-auto'>
                 <div className='relative h-full  p-4 flex flex-col justify-between'>
 
 
