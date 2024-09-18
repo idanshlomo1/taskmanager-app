@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
+import prisma from "@/lib/connectToDb"; // Adjust the path according to your project structure
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
@@ -11,7 +12,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
             return NextResponse.json({ error: "Unauthorized", status: 401 });
         }
 
-        const task = await prisma?.task.delete({
+        const task = await prisma.task.delete({
             where: {
                 id,
             }
@@ -21,7 +22,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     } catch (error) {
         console.log("Error deleting task", error)
-        return NextResponse.json({ error: "Error deleting task", status: 500 })
+        return NextResponse.json({ error: `Error deleting task ${error}`, status: 500 })
     }
 }
 
@@ -58,6 +59,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     } catch (error) {
         console.log("Error updating task", error);
-        return NextResponse.json({ error: `Error updating task ${error}` , status: 500 });
+        return NextResponse.json({ error: `Error updating task ${error}`, status: 500 });
     }
 }
