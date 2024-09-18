@@ -58,6 +58,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     } catch (error) {
         console.log("Error updating task", error);
-        return NextResponse.json({ error: "Error updating task", status: 500 });
+        return NextResponse.json({ error: `Error updating task ${error}` , status: 500 });
     }
 }
