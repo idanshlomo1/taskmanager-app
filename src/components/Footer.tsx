@@ -11,7 +11,7 @@ const Footer = () => {
                     </span>
                     <a
                         className="flex items-center hover:opacity-80 transition duration-200 ease-in-out"
-                        href="https://idanshlomo.com"
+                        href="https://idanshlomo-dev.netlify.app/"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
