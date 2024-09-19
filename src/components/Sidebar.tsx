@@ -1,13 +1,13 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon } from "lucide-react"
+import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useClerk, useUser } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { ModeToggle } from "./ModeToggle"
 
 const navItems = [
@@ -19,9 +19,9 @@ const navItems = [
 
 export default function Component() {
     const pathName = usePathname()
-    const { signOut, openUserProfile } = useClerk()
     const { user } = useUser()
     const { firstName, lastName, imageUrl } = user || {}
+    const router = useRouter()
 
 
     return (
@@ -35,8 +35,10 @@ export default function Component() {
                                 alt="Profile"
                                 width={48}
                                 height={48}
-                                className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-                                onClick={() => openUserProfile()}
+                                className={cn(
+                                    'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
+                                    pathName === '/account' ? 'shadow-xl shadow-blue-800' : ''
+                                )} onClick={() => router.push('/account')}
                             />
                             <div>
                                 <p className="font-medium">{firstName} {lastName}</p>
@@ -66,10 +68,10 @@ export default function Component() {
                         <Button
                             variant="ghost"
                             className="w-full justify-start space-x-2"
-                            onClick={() => signOut({ redirectUrl: "/" })}
+                            onClick={() => router.push('/guide')}
                         >
-                            <LogOutIcon size={20} />
-                            <span>Sign out</span>
+                            <ShieldQuestion size={20} />
+                            <span>How to use the app</span>
                         </Button>
                     </div>
                 </div>
@@ -77,6 +79,7 @@ export default function Component() {
 
             <div className="md:hidden">
                 <div className="fixed inset-x-0 top-0 h-14 flex items-center justify-between px-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
+
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -84,18 +87,20 @@ export default function Component() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="w-64 p-0">
+
                             <div className="flex flex-col h-full">
                                 <div className="p-4 border-b">
                                     <div className="flex items-center space-x-4">
                                         <SheetClose asChild>
-
                                             <Image
                                                 src={imageUrl || "/placeholder.svg?height=48&width=48"}
                                                 alt="Profile"
                                                 width={48}
                                                 height={48}
-                                                className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-                                                onClick={() => openUserProfile()}
+                                                className={cn(
+                                                    'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
+                                                    pathName === '/account' ? 'shadow-xl shadow-blue-800' : ''
+                                                )} onClick={() => router.push('/account')}
                                             />
                                         </SheetClose>
                                         <div>
@@ -126,14 +131,17 @@ export default function Component() {
                                     ))}
                                 </ul>
                                 <div className="p-4 border-t">
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full justify-start space-x-2"
-                                        onClick={() => signOut({ redirectUrl: "/" })}
-                                    >
-                                        <LogOutIcon size={20} />
-                                        <span>Sign out</span>
-                                    </Button>
+                                    <SheetClose asChild>
+
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start space-x-2"
+                                            onClick={() => router.push('/guide')}
+                                        >
+                                            <ShieldQuestion size={20} />
+                                            <span>How to use the app</span>
+                                        </Button>
+                                    </SheetClose>
                                 </div>
                             </div>
                         </SheetContent>

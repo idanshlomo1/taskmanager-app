@@ -23,9 +23,10 @@ export default function Tasks({ title, tasks }: TasksProps) {
   const handleOpen = () => setIsOpen(true)
   const handleClose = () => setIsOpen(false)
 
+
   return (
     <div className="w-full h-[80vh] border flex flex-col bg-background rounded-lg  overflow-hidden">
-      <div className="flex items-center justify-between p-6 border-b">
+      <div className="flex items-center justify-between p-6 border-b ">
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         <Button onClick={handleOpen} size="sm" className="gap-2">
           <PlusCircle className="h-4 w-4" />
