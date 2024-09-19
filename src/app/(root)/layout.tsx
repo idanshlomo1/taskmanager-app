@@ -18,11 +18,17 @@ const HomeLayout = ({ children }: { children: ReactNode }) => {
     return (
         <div>
             <div className='flex flex-col md:gap-8 min-h-[100vh] p-4 md:p-10 max-w-7xl mx-auto'>
-                <div className='w-full rounded-lg justify-between flex items-center'>
-                    <h1 className='text-2xl font-bold'>Task Manager</h1>
-                    <ModeToggle />
+                <div className='hidden md:block '>
+
+                    <div className='flex w-full justify-between items-center'>
+                        <h1 className='font-bold text-2xl'>
+                            Task Manager
+
+                        </h1>
+                        <ModeToggle />
+                    </div>
                 </div>
-                <div className='flex md:gap-10'>
+                <div className='flex md:gap-8'>
                     <Sidebar />
                     <div className='w-full'>
                         {children}

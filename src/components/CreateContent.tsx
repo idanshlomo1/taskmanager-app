@@ -10,7 +10,12 @@ import { useGlobalUpdate } from "@/lib/hooks";
 import { Task } from "@/lib/types";
 import { Loader as Spinner } from "lucide-react"; // Import the loader (Spinner)
 
-const CreateContent = () => {
+interface CreateContentProps {
+    handleCloseDialog: () => void; // Add the close function as a prop
+}
+
+
+const CreateContent = ({ handleCloseDialog }: CreateContentProps) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState<Date | undefined>(new Date());
@@ -81,6 +86,8 @@ const CreateContent = () => {
         }
 
         setIsCreating(false); // Set loading state to false
+        handleCloseDialog()
+
     };
 
     return (

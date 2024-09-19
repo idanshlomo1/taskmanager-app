@@ -1,186 +1,147 @@
 "use client"
-import { cn } from '@/lib/utils'
-import { Check, CheckIcon, Divide, Home, Icon, List, LogOutIcon, LucideLogOut, MenuIcon, Pencil, XIcon } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React, { useRef } from 'react'
-import { Button } from './ui/button'
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet'
-import { ModeToggle } from './ModeToggle'
-import { DialogTitle } from '@radix-ui/react-dialog'
-import { useClerk, UserButton, useUser } from '@clerk/nextjs'
 
-const Sidebar = () => {
-    const navItems = [
-        {
-            id: 1,
-            title: "All Tasks",
-            icon: <Home size={20} />,
-            link: "/"
-        },
-        {
-            id: 2,
-            title: "Important",
-            icon: <List size={20} />,
-            link: "/important"
-        },
-        {
-            id: 3,
-            title: "Completed",
-            icon: <CheckIcon size={20} />,
-            link: "/completed"
-        },
-        {
-            id: 4,
-            title: "Incomplete",
-            icon: <XIcon size={20} />,
-            link: "/incomplete"
-        },
-    ]
+import { cn } from "@/lib/utils"
+import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { useClerk, useUser } from "@clerk/nextjs"
+import { ModeToggle } from "./ModeToggle"
 
+const navItems = [
+    { id: 1, title: "All Tasks", icon: <Home size={20} />, link: "/" },
+    { id: 2, title: "Important", icon: <List size={20} />, link: "/important" },
+    { id: 3, title: "Completed", icon: <CheckIcon size={20} />, link: "/completed" },
+    { id: 4, title: "Incomplete", icon: <XIcon size={20} />, link: "/incomplete" },
+]
+
+export default function Component() {
     const pathName = usePathname()
-
-    const { signOut } = useClerk()
-
-
-    const { openUserProfile } = useClerk(); // Use the Clerk hook to get the openUserProfile function
-
-    const handleOpenUserProfile = () => {
-        // Open the user profile modal
-        openUserProfile();
-    };
-
+    const { signOut, openUserProfile } = useClerk()
     const { user } = useUser()
-    const { firstName, lastName, imageUrl } = user || { firstName: "", lastName: "", imageUrl: "/" }
+    const { firstName, lastName, imageUrl } = user || {}
+
 
     return (
-        <nav >
-            {/* md+ screens */}
-            <div className='hidden md:block h-[80vh] rounded-lg border overflow-y-auto'>
-                <div className='relative h-full  p-4 flex flex-col justify-between'>
-
-
-
-                    <div
-                        className="flex gap-4 items-center justify-center py-4 rounded-lg "
-
-                    >
-                        <div className='h-[70px] border w-[70px] rounded-full flex items-center justify-center overflow-hidden'>
+        <nav>
+            <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="flex flex-col h-full">
+                    <div className="p-4 border-b">
+                        <div className="flex items-center space-x-4">
                             <Image
-                                onClick={handleOpenUserProfile}
-                                width={80}
-                                height={80}
-                                alt="profile"
-                                src={`${imageUrl}`}
-                                priority
-                                className="rounded-full object-cover hover:opacity-80 cursor-pointer duration-200"
+                                src={imageUrl || "/placeholder.svg?height=48&width=48"}
+                                alt="Profile"
+                                width={48}
+                                height={48}
+                                className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => openUserProfile()}
                             />
+                            <div>
+                                <p className="font-medium">{firstName} {lastName}</p>
+                                <p className="text-sm text-muted-foreground">Task Manager</p>
+                            </div>
                         </div>
-
-                        <p className="font-medium flex items-start flex-col">
-                            <span>{firstName}</span>
-                            <span>{lastName}</span>
-                        </p>
                     </div>
-
-                    <ul>
-                        {navItems.map((navItem) => (
-                            <li key={navItem.id}>
+                    <ul className="flex-1 overflow-y-auto py-2">
+                        {navItems.map((item) => (
+                            <li key={item.id}>
                                 <Link
-                                    className={cn('flex text-muted-foreground justify-start w-full items-center mt-4 gap-4 p-4 rounded-sm hover:bg-accent duration-200',
-                                        navItem.link === pathName && 'bg-accent text-primary')}
-                                    href={navItem.link}
+                                    href={item.link}
+                                    className={cn(
+                                        "flex items-center space-x-3 px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                                        item.link === pathName
+                                            ? "bg-secondary text-secondary-foreground"
+                                            : "text-muted-foreground hover:bg-secondary/50 hover:text-secondary-foreground"
+                                    )}
                                 >
-                                    {navItem.icon}
-                                    <p className='font-medium'>{navItem.title}</p>
+                                    {item.icon}
+                                    <span>{item.title}</span>
                                 </Link>
                             </li>
                         ))}
                     </ul>
-
-                    <Button
-                        className='flex gap-2 justify-center  p-4 items-center'
-                        variant={'ghost'}
-                        onClick={() => signOut({ redirectUrl: '/' })}>
-                        Sign out
-                        <LogOutIcon size={20} />
-                    </Button>
+                    <div className="p-4 border-t">
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start space-x-2"
+                            onClick={() => signOut({ redirectUrl: "/" })}
+                        >
+                            <LogOutIcon size={20} />
+                            <span>Sign out</span>
+                        </Button>
+                    </div>
                 </div>
             </div>
-            {/* sm screens */}
-            <div className='md:hidden flex w-full items-center fixed bg-background border-b-2  p-4 left-0 top-0 z-50'>
-                <Sheet>
-                    <SheetTrigger>
-                        <div className='p-2 rounded-full border outline-none bg-popover focus:bg-accent hover:bg-accent hover:opacity-80 duration-200'>
-                            <MenuIcon size={30} />
-                        </div>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-64">
-                        <DialogTitle className='font-bold'>Task Manager</DialogTitle>
-                        <div className='relative w-full h-full px-4 py-12 flex flex-col justify-between'>
 
-                            <div
-                                className="flex gap-4 items-center justify-center py-4  "
-                            >
-                                <SheetClose className='rounded-full' onClick={handleOpenUserProfile}>
-                                    <Image
-
-                                        width={80}
-                                        height={80}
-                                        alt="profile"
-                                        src={`${imageUrl}`}
-                                        priority
-                                        className="rounded-full object-cover hover:opacity-80 cursor-pointer duration-200"
-                                    />
-                                </SheetClose>
-                                <p className="font-medium flex items-start flex-col">
-                                    <span>{firstName}</span>
-                                    <span>{lastName}</span>
-                                </p>
-                            </div>
-
-
-                            <ul>
-                                {navItems.map((navItem) => (
-                                    <li key={navItem.id}>
-                                        <Link href={navItem.link}>
-                                            <SheetClose
-                                                className={cn('flex text-muted-foreground justify-start w-full items-center mt-4 gap-4 p-4 rounded-sm hover:bg-accent duration-200',
-                                                    navItem.link === pathName && 'bg-accent text-primary')}
-                                            >
-                                                {navItem.icon}
-                                                <p className='font-medium'>{navItem.title}
-
-                                                </p>
-                                            </SheetClose>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <Button
-                                className='flex gap-2 justify-center  p-4 items-center'
-                                variant={'ghost'}
-                                onClick={() => signOut({ redirectUrl: '/' })}>
-                                Sign out
-                                <LogOutIcon size={20} />
+            <div className="md:hidden">
+                <div className="fixed inset-x-0 top-0 h-14 flex items-center justify-between px-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <MenuIcon size={24} />
                             </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-64 p-0">
+                            <div className="flex flex-col h-full">
+                                <div className="p-4 border-b">
+                                    <div className="flex items-center space-x-4">
+                                        <SheetClose asChild>
 
-                        </div>
+                                            <Image
+                                                src={imageUrl || "/placeholder.svg?height=48&width=48"}
+                                                alt="Profile"
+                                                width={48}
+                                                height={48}
+                                                className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                                                onClick={() => openUserProfile()}
+                                            />
+                                        </SheetClose>
+                                        <div>
+                                            <p className="font-medium">{firstName} {lastName}</p>
+                                            <p className="text-sm text-muted-foreground">Task Manager</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul className="flex-1 overflow-y-auto py-2">
 
-
-                    </SheetContent>
-
-                </Sheet>
-
-                <h1 className='text-xl font-bold p-2 mx-4'>Task Manager</h1>
-                <div className='ml-auto'> {/* Pushes the ModeToggle to the right */}
+                                    {navItems.map((item) => (
+                                        <li key={item.id}>
+                                            <SheetClose asChild>
+                                                <Link
+                                                    href={item.link}
+                                                    className={cn(
+                                                        "flex items-center space-x-3 px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                                                        item.link === pathName
+                                                            ? "bg-secondary text-secondary-foreground"
+                                                            : "text-muted-foreground hover:bg-secondary/50 hover:text-secondary-foreground"
+                                                    )}
+                                                >
+                                                    {item.icon}
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SheetClose>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="p-4 border-t">
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start space-x-2"
+                                        onClick={() => signOut({ redirectUrl: "/" })}
+                                    >
+                                        <LogOutIcon size={20} />
+                                        <span>Sign out</span>
+                                    </Button>
+                                </div>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                    <h1 className="text-lg font-semibold">Task Manager</h1>
                     <ModeToggle />
                 </div>
             </div>
         </nav>
     )
 }
-
-export default Sidebar

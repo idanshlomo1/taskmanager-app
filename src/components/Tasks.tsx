@@ -1,70 +1,80 @@
-import React from 'react';
-import TaskItem from './TaskItem';
-import { Button } from './ui/button';
-import { PlusCircle } from 'lucide-react';
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from './ui/dialog';
-import CreateContent from './CreateContent';
-import { useGlobalState } from '@/lib/hooks';
-import { Skeleton } from './ui/skeleton';
-import { Task } from '@/lib/types';
+"use client"
 
-interface Props {
-    title: string;
-    tasks: Task[];
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { PlusCircle, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useGlobalState } from '@/lib/hooks'
+import { Task } from '@/lib/types'
+import TaskItem from './TaskItem'
+import CreateContent from './CreateContent'
+
+interface TasksProps {
+  title: string
+  tasks: Task[]
 }
 
-const Tasks = ({ title, tasks }: Props) => {
-    const { isInitialLoading } = useGlobalState(); // Get the new `isInitialLoading` state
-    const skeletonArray = Array(3).fill(0); // Adjust the number of skeletons based on your grid
+export default function Tasks({ title, tasks }: TasksProps) {
+  const { isInitialLoading } = useGlobalState()
+  const [isOpen, setIsOpen] = useState(false)
 
-    return (
-        <div className='w-full border rounded-lg p-8 flex flex-col h-[80vh]'>
-            <div className='flex w-full gap-4 md:gap-0 justify-between items-center mb-8'>
-                <h1 className='text-2xl font-bold'>
-                    {title}
-                </h1>
+  const handleOpen = () => setIsOpen(true)
+  const handleClose = () => setIsOpen(false)
 
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button className='flex gap-2' variant={'default'}>
-                            New Task <PlusCircle size={20} />
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent >
-                        <DialogTitle>Create Task</DialogTitle>
-                        <CreateContent />
-                        <DialogClose asChild>
-                            <Button variant="secondary">Close</Button>
-                        </DialogClose>
-                    </DialogContent>
-                </Dialog>
-            </div>
+  return (
+    <div className="w-full h-[80vh] border flex flex-col bg-background rounded-lg  overflow-hidden">
+      <div className="flex items-center justify-between p-6 border-b">
+        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        <Button onClick={handleOpen} size="sm" className="gap-2">
+          <PlusCircle className="h-4 w-4" />
+          New Task
+        </Button>
+      </div>
 
-            {!isInitialLoading ? (
-                <>
-                    <div className='flex-1 overflow-y-auto'>
-                        {tasks.length > 0 ? (
-                            <div className='grid grid-cols-1 gap-8'>
-                                {tasks.map((task) => (
-                                    <TaskItem key={task.id} task={{ ...task }} />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className='text-muted-foreground'>{title} will be displayed here...</p>
-                        )}
-                    </div>
-                </>
-            ) : (
-                <div className='flex-1 overflow-y-auto'>
-                    <div className="grid grid-cols-1 gap-8">
-                        {skeletonArray.map((_, index) => (
-                            <Skeleton key={index} className="h-36 w-full rounded-lg" />
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
+      <ScrollArea className="flex-grow p-6">
+        {isInitialLoading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, index) => (
+              <TaskItemSkeleton key={index} />
+            ))}
+          </div>
+        ) : tasks.length > 0 ? (
+          <AnimatePresence initial={false}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-4 "
+            >
+              {tasks.map((task) => (
+                <TaskItem key={task.id} task={task} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <p className="text-center text-muted-foreground py-8">
+            No tasks found. Create a new task to get started.
+          </p>
+        )}
+      </ScrollArea>
 
-export default Tasks;
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogTitle>Create New Task</DialogTitle>
+          <CreateContent handleCloseDialog={handleClose} />
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
+function TaskItemSkeleton() {
+  return (
+    <div className="w-full h-24 bg-muted rounded-lg animate-pulse flex items-center justify-center">
+      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+    </div>
+  )
+}
