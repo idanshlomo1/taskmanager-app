@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export default function GuidePage() {
   return (
     <main className="h-full pt-12 md:pt-0">
-      <div className="w-full h-[80vh] border flex flex-col bg-background rounded-lg overflow-hidden">
+      <div className="h-[80vh]  border flex flex-col bg-background rounded-lg ">
         <div className="flex items-center justify-between p-6 border-b">
           <h1 className="text-3xl font-bold tracking-tight">Guide</h1>
           <div className="flex items-center gap-4">
@@ -20,7 +20,7 @@ export default function GuidePage() {
           </div>
         </div>
         <ScrollArea className="flex-grow p-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-1">
             <GuideCard
               icon={<CheckCircle className="h-6 w-6 text-green-500" />}
               title="Creating Tasks"

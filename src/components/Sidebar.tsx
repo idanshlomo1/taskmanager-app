@@ -37,7 +37,7 @@ export default function Component() {
                                 height={48}
                                 className={cn(
                                     'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
-                                    pathName === '/account' ? 'shadow-xl shadow-blue-800' : ''
+                                    pathName === '/account' ? '' : ''
                                 )} onClick={() => router.push('/account')}
                             />
                             <div>
@@ -99,7 +99,7 @@ export default function Component() {
                                                 height={48}
                                                 className={cn(
                                                     'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
-                                                    pathName === '/account' ? 'shadow-xl shadow-blue-800' : ''
+                                                    pathName === '/account' ? '' : ''
                                                 )} onClick={() => router.push('/account')}
                                             />
                                         </SheetClose>
