@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, CheckCircle, Clock, Star } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, CircleArrowOutUpLeftIcon, Clock, PlusCircle, Star } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -22,7 +22,7 @@ export default function GuidePage() {
         <ScrollArea className="flex-grow p-6">
           <div className="grid gap-6 md:grid-cols-1">
             <GuideCard
-              icon={<CheckCircle className="h-6 w-6 text-green-500" />}
+              icon={<PlusCircle className="h-6 w-6 text-purple-500" />}
               title="Creating Tasks"
               description="Learn how to create and manage your tasks effectively."
               details="To create a task, go to the 'Tasks' section, click on 'Add Task', fill in the necessary details like title, description, and due date, and then save it. You can also categorize tasks and assign priority levels."
@@ -40,11 +40,12 @@ export default function GuidePage() {
               details="You can set due dates for each task in the 'Add Task' or 'Edit Task' forms. Once a due date is set, tasks will appear on your calendar view, helping you manage deadlines effectively."
             />
             <GuideCard
-              icon={<BookOpen className="h-6 w-6 text-purple-500" />}
-              title="Best Practices"
-              description="Explore tips and tricks for optimal task management."
-              details="Organize tasks by category, prioritize them based on importance and deadlines, and review your task list daily to stay on track. Use tags to quickly filter tasks and stay productive."
+              icon={<CheckCircle className="h-6 w-6 text-green-500" />}
+              title="Task Completion"
+              description="Learn how to mark tasks as completed and update them."
+              details="Once you've finished a task, mark it as completed by clicking the checkbox next to the task. You can also edit any task details by selecting the task, making your changes, and saving them. Keep track of your progress by reviewing completed tasks regularly."
             />
+
           </div>
         </ScrollArea>
       </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion } from "lucide-react"
+import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion, Calendar } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -12,9 +12,11 @@ import { ModeToggle } from "./ModeToggle"
 
 const navItems = [
     { id: 1, title: "All Tasks", icon: <Home size={20} />, link: "/" },
-    { id: 2, title: "Important", icon: <List size={20} />, link: "/important" },
-    { id: 3, title: "Completed", icon: <CheckIcon size={20} />, link: "/completed" },
-    { id: 4, title: "Incomplete", icon: <XIcon size={20} />, link: "/incomplete" },
+    { id: 2, title: "Calendar", icon: <Calendar size={20} />, link: "/calendar" }, // Added calendar view
+    { id: 3, title: "Important", icon: <List size={20} />, link: "/important" },
+    { id: 4, title: "Completed", icon: <CheckIcon size={20} />, link: "/completed" },
+    { id: 5, title: "Incomplete", icon: <XIcon size={20} />, link: "/incomplete" },
+
 ]
 
 export default function Component() {
@@ -26,7 +28,7 @@ export default function Component() {
 
     return (
         <nav>
-            <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background">
                 <div className="flex flex-col h-full">
                     <div className="p-4 border-b">
                         <div className="flex items-center space-x-4">
@@ -42,7 +44,7 @@ export default function Component() {
                             />
                             <div>
                                 <p className="font-medium">{firstName} {lastName}</p>
-                                <p className="text-sm text-muted-foreground">Task Manager</p>
+                                <p className="text-sm text-muted-foreground">{user?.username || 'Task Manager'}</p>
                             </div>
                         </div>
                     </div>

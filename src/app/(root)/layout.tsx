@@ -16,19 +16,18 @@ export const metadata: Metadata = {
 };
 const HomeLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <div>
-            <div className='flex flex-col md:gap-8 min-h-[100vh] p-4 md:p-10 max-w-7xl mx-auto'>
+        <div className='bg-gradient-to-br from-primary/20 to-secondary/20'>
+            <div className='flex flex-col md:gap-2 min-h-[100vh]  md:p-10 max-w-7xl mx-auto '>
                 <div className='hidden md:block '>
 
-                    <div className='flex w-full justify-between items-center'>
+                    <div className='flex w-full justify-between items-center bg-background px-6 py-4 rounded-lg'>
                         <h1 className='font-bold text-2xl'>
                             Task Manager
-
                         </h1>
                         <ModeToggle />
                     </div>
                 </div>
-                <div className='flex md:gap-8'>
+                <div className='flex md:gap-2'>
                     <Sidebar />
                     <div className='w-full'>
                         {children}

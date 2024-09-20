@@ -115,7 +115,7 @@ const CreateContent = ({ handleCloseDialog }: CreateContentProps) => {
                 />
             </div>
             <div className="flex flex-col gap-2">
-                <Label htmlFor="date">Date</Label>
+                <Label htmlFor="date">Due date</Label>
                 <DatePickerDemo date={date} onDateChange={handleDateChange} />
             </div>
             <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ const CreateContent = ({ handleCloseDialog }: CreateContentProps) => {
                     checked={isCompleted}
                     onChange={handleCheckboxChange("isCompleted")}
                 />
-                <Label htmlFor="isCompleted">Toggle Completed</Label>
+                <Label htmlFor="isCompleted">Completed Task</Label>
             </div>
             <div className="flex items-center gap-2">
                 <input
@@ -134,7 +134,7 @@ const CreateContent = ({ handleCloseDialog }: CreateContentProps) => {
                     checked={isImportant}
                     onChange={handleCheckboxChange("isImportant")}
                 />
-                <Label htmlFor="isImportant">Toggle Important</Label>
+                <Label htmlFor="isImportant">Important Task</Label>
             </div>
             <Button className="mt-4" disabled={isCreating}>
                 {isCreating ? (

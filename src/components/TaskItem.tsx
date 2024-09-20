@@ -51,7 +51,7 @@ export default function TaskItem({ task }: TaskItemProps) {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
         >
-            <Card className={cn("transition-all duration-300 shadow-sm hover:shadow-lg", isCompleted && "opacity-60")}>
+            <Card className={cn("transition-all duration-300 shadow-sm hover:shadow-lg ", isCompleted && "opacity-60")}>
                 <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg font-semibold line-clamp-1">{title}</CardTitle>

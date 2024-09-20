@@ -97,7 +97,7 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="date">Date</Label> {/* Consistent with CreateContent */}
+            <Label htmlFor="date">Due date</Label> {/* Consistent with CreateContent */}
             <DatePickerDemo
               date={editedTask.date ? new Date(editedTask.date) : undefined}
               onDateChange={handleDateChange}
@@ -110,7 +110,7 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               checked={editedTask.isCompleted}
               onChange={handleCheckboxChange("isCompleted")}
             />
-            <Label htmlFor="isCompleted">Toggle Completed</Label>
+            <Label htmlFor="isCompleted">Completed Task</Label>
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -119,7 +119,7 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               checked={editedTask.isImportant}
               onChange={handleCheckboxChange("isImportant")}
             />
-            <Label htmlFor="isImportant">Toggle Important</Label>
+            <Label htmlFor="isImportant">Important Task</Label>
           </div>
           <Button className="mt-4" disabled={isLoading}>
             {isLoading ? (
