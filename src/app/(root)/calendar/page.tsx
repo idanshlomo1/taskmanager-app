@@ -51,11 +51,12 @@ export default function CalendarView() {
                 </div>
                 <ScrollArea className="flex-grow p-2 md:p-6 ">
                     <div className="grid grid-cols-7 gap-2 md:gap-4">
-                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
-                            <div key={day} className="text-center font-semibold text-sm md:text-base">
+                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                            <div key={index} className="text-center font-semibold text-sm md:text-base">
                                 {day}
                             </div>
                         ))}
+
                         {monthDays.map((day) => {
                             const dayTasks = tasks.filter((task) => isSameDay(new Date(task.date), day))
                             const hasImportantTask = dayTasks.some(task => task.isImportant)
