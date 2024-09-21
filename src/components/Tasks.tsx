@@ -23,10 +23,9 @@ export default function Tasks({ title, tasks }: TasksProps) {
   const handleOpen = () => setIsOpen(true)
   const handleClose = () => setIsOpen(false)
 
-
   return (
-    <div className="w-full h-[80vh] border flex flex-col bg-background rounded-lg  overflow-hidden">
-      <div className="flex items-center justify-between p-6 border-b ">
+    <div className="w-full  mx-auto h-[80vh] border flex flex-col bg-background rounded-lg overflow-hidden">
+      <div className="flex items-center justify-between p-6 border-b">
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         <Button onClick={handleOpen} size="sm" className="gap-2">
           <PlusCircle className="h-4 w-4" />
@@ -34,7 +33,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
         </Button>
       </div>
 
-      <ScrollArea className="flex-grow p-6">
+      <ScrollArea className="flex-grow p-4">
         {isInitialLoading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, index) => (
@@ -48,7 +47,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="space-y-4 "
+              className="space-y-4  mx-auto"
             >
               {tasks.map((task) => (
                 <TaskItem key={task.id} task={task} />
@@ -63,7 +62,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
       </ScrollArea>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogTitle>Create New Task</DialogTitle>
           <CreateContent handleCloseDialog={handleClose} />
         </DialogContent>

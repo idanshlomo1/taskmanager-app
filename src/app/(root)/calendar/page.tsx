@@ -49,7 +49,7 @@ export default function CalendarView() {
                         </Button>
                     </div>
                 </div>
-                <ScrollArea className="flex-grow p-2 md:p-6">
+                <ScrollArea className="flex-grow p-2 md:p-6 ">
                     <div className="grid grid-cols-7 gap-2 md:gap-4">
                         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
                             <div key={day} className="text-center font-semibold text-sm md:text-base">
@@ -94,10 +94,13 @@ export default function CalendarView() {
                                                         <DialogTitle>{format(day, 'MMMM d, yyyy')}</DialogTitle>
                                                     </DialogHeader>
                                                     <ScrollArea className="max-h-[60vh]">
-                                                        {dayTasks.map((task) => (
-                                                            <TaskItem key={task.id} task={task} />
-                                                        ))}
+                                                        <div className="flex flex-col gap-2">
+                                                            {dayTasks.map((task) => (
+                                                                <TaskItem key={task.id} task={task} />
+                                                            ))}
+                                                        </div>
                                                     </ScrollArea>
+
                                                 </DialogContent>
                                             </Dialog>
                                         )}

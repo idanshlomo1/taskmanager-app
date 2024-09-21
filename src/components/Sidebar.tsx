@@ -2,21 +2,20 @@
 
 import { cn } from "@/lib/utils"
 import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion, Calendar } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useUser } from "@clerk/nextjs"
 import { ModeToggle } from "./ModeToggle"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navItems = [
     { id: 1, title: "All Tasks", icon: <Home size={20} />, link: "/" },
-    { id: 2, title: "Calendar", icon: <Calendar size={20} />, link: "/calendar" }, // Added calendar view
+    { id: 2, title: "Calendar", icon: <Calendar size={20} />, link: "/calendar" },
     { id: 3, title: "Important", icon: <List size={20} />, link: "/important" },
     { id: 4, title: "Completed", icon: <CheckIcon size={20} />, link: "/completed" },
     { id: 5, title: "Incomplete", icon: <XIcon size={20} />, link: "/incomplete" },
-
 ]
 
 export default function Component() {
@@ -25,23 +24,16 @@ export default function Component() {
     const { firstName, lastName, imageUrl } = user || {}
     const router = useRouter()
 
-
     return (
         <nav>
             <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background">
                 <div className="flex flex-col h-full">
                     <div className="p-4 border-b">
                         <div className="flex items-center space-x-4">
-                            <Image
-                                src={imageUrl || "/placeholder.svg?height=48&width=48"}
-                                alt="Profile"
-                                width={48}
-                                height={48}
-                                className={cn(
-                                    'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
-                                    pathName === '/account' ? '' : ''
-                                )} onClick={() => router.push('/account')}
-                            />
+                            <Avatar className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
+                                <AvatarImage src={imageUrl} alt="Profile" />
+                                <AvatarFallback>{firstName?.charAt(0)}{lastName?.charAt(0)}</AvatarFallback>
+                            </Avatar>
                             <div>
                                 <p className="font-medium">{firstName} {lastName}</p>
                                 <p className="text-sm text-muted-foreground">{user?.username || 'Task Manager'}</p>
@@ -81,7 +73,6 @@ export default function Component() {
 
             <div className="md:hidden">
                 <div className="fixed inset-x-0 top-0 h-14 flex items-center justify-between px-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40 border-b">
-
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -89,21 +80,14 @@ export default function Component() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="w-64 p-0">
-
                             <div className="flex flex-col h-full">
                                 <div className="p-4 border-b">
                                     <div className="flex items-center space-x-4">
                                         <SheetClose asChild>
-                                            <Image
-                                                src={imageUrl || "/placeholder.svg?height=48&width=48"}
-                                                alt="Profile"
-                                                width={48}
-                                                height={48}
-                                                className={cn(
-                                                    'rounded-full cursor-pointer hover:opacity-80 transition-opacity',
-                                                    pathName === '/account' ? '' : ''
-                                                )} onClick={() => router.push('/account')}
-                                            />
+                                            <Avatar className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
+                                                <AvatarImage src={imageUrl} alt="Profile" />
+                                                <AvatarFallback>{firstName?.charAt(0)}{lastName?.charAt(0)}</AvatarFallback>
+                                            </Avatar>
                                         </SheetClose>
                                         <div>
                                             <p className="font-medium">{firstName} {lastName}</p>
@@ -112,7 +96,6 @@ export default function Component() {
                                     </div>
                                 </div>
                                 <ul className="flex-1 overflow-y-auto py-2">
-
                                     {navItems.map((item) => (
                                         <li key={item.id}>
                                             <SheetClose asChild>
@@ -134,7 +117,6 @@ export default function Component() {
                                 </ul>
                                 <div className="p-4 border-t">
                                     <SheetClose asChild>
-
                                         <Button
                                             variant="ghost"
                                             className="w-full justify-start space-x-2"

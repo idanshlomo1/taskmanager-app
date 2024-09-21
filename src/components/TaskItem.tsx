@@ -46,26 +46,25 @@ export default function TaskItem({ task }: TaskItemProps) {
 
     return (
         <motion.div
+            className='max-w-4xl'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
         >
-            <Card className={cn("transition-all duration-300 shadow-sm hover:shadow-lg ", isCompleted && "opacity-60")}>
-                <CardHeader className="pb-2">
+            <Card className={cn("transition-all duration-300 bg-accent shadow-sm hover:shadow-lg  ", isCompleted && "opacity-60 bg-accent")}>
+                <CardHeader className="pb-2 ">
                     <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-semibold line-clamp-1">{title}</CardTitle>
-                        <Badge variant={isCompleted ? "secondary" : "default"}>
-                            {isCompleted ? "Completed" : "In Progress"}
-                        </Badge>
+                        <CardTitle className="text-lg font-semibold line-clamp-1 break-words">{title}</CardTitle>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{description}</p>
+                <CardContent >
+                    <p className="text-sm text-muted-foreground mb-2 break-words">{description}</p>
                     <p className="text-xs text-muted-foreground">Due: {format(new Date(date), 'PPP')}</p>
                 </CardContent>
-                <CardFooter className="flex justify-between items-center">
+                <CardFooter className="w-full flex justify-between">
                     <div className="flex space-x-2">
+
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -110,11 +109,15 @@ export default function TaskItem({ task }: TaskItemProps) {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    </div>
-                    <div className="flex space-x-2">
+
                         <EditTaskDialog task={task} onUpdateTask={handleUpdateTask} />
                         <DeleteTaskDialog task={task} onDelete={handleDelete} />
+
+
                     </div>
+                    <Badge variant={isCompleted ? "secondary" : "default"}>
+                        {isCompleted ? "Completed" : "In Progress"}
+                    </Badge>
                 </CardFooter>
             </Card>
         </motion.div>

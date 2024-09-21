@@ -41,20 +41,20 @@ export default function EnhancedSignIn() {
     }
   }
 
-  const handleGoogleSignIn = () => {
-    if (!isLoaded) return
-    signIn.authenticateWithRedirect({
-      strategy: 'oauth_google',
-      redirectUrl: '/sso-callback',
-      redirectUrlComplete: '/'
-    })
-  }
+  // const handleGoogleSignIn = () => {
+  //   if (!isLoaded) return
+  //   signIn.authenticateWithRedirect({
+  //     strategy: 'oauth_google',
+  //     redirectUrl: '/sso-callback',
+  //     redirectUrlComplete: '/'
+  //   })
+  // }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/20 to-secondary/20">
       <div className="w-full max-w-6xl flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden">
-        <motion.div 
-          className="w-full md:w-1/2  bg-gradient-to-tr from-blue-500 to-blue-400 p-12 flex flex-col justify-center items-center text-white"
+        <motion.div
+          className=" w-full md:w-1/2  bg-gradient-to-tr from-blue-500 to-blue-400 p-12 flex flex-col justify-center items-center text-white"
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -67,14 +67,14 @@ export default function EnhancedSignIn() {
             className="rounded-xl w-24"
           />
         </motion.div>
-        <motion.div 
+        <motion.div
           className="w-full md:w-1/2 bg-background p-12"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Card className="w-full bg-transparent shadow-none">
-            <CardHeader>
+            <CardHeader >
               <CardTitle className="text-3xl">Sign In</CardTitle>
               <CardDescription>Welcome back to Task Manager</CardDescription>
             </CardHeader>

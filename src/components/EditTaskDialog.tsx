@@ -10,11 +10,15 @@ import { Pencil, Loader as Spinner } from "lucide-react"; // Reusing Spinner her
 import { Task } from "@/lib/types";
 import { DatePickerDemo } from "./DatePickerDemo";
 import toast from "react-hot-toast"; // Import toast for error messages
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; // Import tooltip components
 
 interface EditTaskDialogProps {
   task: Task;
   onUpdateTask: (task: Task) => Promise<void>;
 }
+
+const MAX_TITLE_LENGTH = 50;
+const MAX_DESCRIPTION_LENGTH = 500;
 
 export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogProps) {
   const [editedTask, setEditedTask] = useState(task);
@@ -23,7 +27,11 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setEditedTask((prev) => ({ ...prev, [name]: value }));
+    if (name === "title" && value.length <= MAX_TITLE_LENGTH) {
+      setEditedTask((prev) => ({ ...prev, title: value }));
+    } else if (name === "description" && value.length <= MAX_DESCRIPTION_LENGTH) {
+      setEditedTask((prev) => ({ ...prev, description: value }));
+    }
   };
 
   const handleDateChange = (date: Date | undefined) => {
@@ -61,11 +69,21 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Pencil className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Edit Task</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Task</DialogTitle>
@@ -83,6 +101,9 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               onChange={handleInputChange}
               required
             />
+            <span className="text-sm text-gray-500">
+              {editedTask.title.length}/{MAX_TITLE_LENGTH} characters
+            </span>
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="description">Description</Label>
@@ -95,9 +116,12 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
               onChange={handleInputChange}
             />
+            <span className="text-sm text-gray-500">
+              {editedTask.description.length}/{MAX_DESCRIPTION_LENGTH} characters
+            </span>
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="date">Due date</Label> {/* Consistent with CreateContent */}
+            <Label htmlFor="date">Due date</Label>
             <DatePickerDemo
               date={editedTask.date ? new Date(editedTask.date) : undefined}
               onDateChange={handleDateChange}
@@ -121,7 +145,7 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
             />
             <Label htmlFor="isImportant">Important Task</Label>
           </div>
-          <Button className="mt-4" disabled={isLoading}>
+          <Button className="mt-4" disabled={isLoading || editedTask.title.length > MAX_TITLE_LENGTH || editedTask.description.length > MAX_DESCRIPTION_LENGTH}>
             {isLoading ? (
               <Spinner size={20} className="animate-spin" /> // Reuse the Spinner here
             ) : (

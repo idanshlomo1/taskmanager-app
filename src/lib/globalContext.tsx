@@ -86,7 +86,7 @@ export const GlobalContextProvider: React.FC<{ children: ReactNode }> = ({ child
                 toast.error(res.data.error);
                 return;
             }
-            toast.success("Task updated successfully.");
+            // toast.success("Task updated successfully.");
             fetchTasks();
         } catch (error) {
             toast.error("Something went wrong.");

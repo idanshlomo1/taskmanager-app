@@ -1,4 +1,5 @@
 "use client"
+import { DatePickerDemo } from '@/components/DatePickerDemo'
 import Tasks from '@/components/Tasks'
 import { useGlobalState } from '@/lib/hooks'
 import React from 'react'
