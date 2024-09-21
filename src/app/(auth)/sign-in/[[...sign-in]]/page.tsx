@@ -10,17 +10,22 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
+import { Loader2 } from 'lucide-react'
 
 export default function EnhancedSignIn() {
   const { isLoaded, signIn, setActive } = useSignIn()
   const [emailOrUsername, setEmailOrUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
+
+    setIsLoading(true)
+    setError('')
 
     try {
       const result = await signIn.create({
@@ -38,17 +43,19 @@ export default function EnhancedSignIn() {
     } catch (err: any) {
       console.error('Error:', err.errors[0].message)
       setError(err.errors[0].message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  // const handleGoogleSignIn = () => {
-  //   if (!isLoaded) return
-  //   signIn.authenticateWithRedirect({
-  //     strategy: 'oauth_google',
-  //     redirectUrl: '/sso-callback',
-  //     redirectUrlComplete: '/'
-  //   })
-  // }
+  const handleGoogleSignIn = () => {
+    if (!isLoaded) return
+    signIn.authenticateWithRedirect({
+      strategy: 'oauth_google',
+      redirectUrl: '/sso-callback',
+      redirectUrlComplete: '/'
+    })
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/20 to-secondary/20">
@@ -100,14 +107,23 @@ export default function EnhancedSignIn() {
                   />
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
-                <Button className="w-full" type="submit">Sign In</Button>
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
               </form>
               <div className="mt-4 text-right">
                 <Link href="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot Password?
                 </Link>
               </div>
-              {/* <div className="relative my-8">
+              <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
@@ -119,7 +135,7 @@ export default function EnhancedSignIn() {
                 <FcGoogle className="mr-2 h-4 w-4" />
                 Google
               </Button>
-              <GoogleOneTap /> */}
+              <GoogleOneTap />
             </CardContent>
             <CardFooter>
               <p className="text-sm text-muted-foreground text-center w-full">

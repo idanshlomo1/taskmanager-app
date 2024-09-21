@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from 'next/link'
 import { z } from 'zod'
+import { Loader2 } from 'lucide-react'
 
 const signUpSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -36,6 +37,7 @@ export default function EnhancedSignUp() {
   const [errors, setErrors] = React.useState<Record<string, string>>({})
   const [verifying, setVerifying] = React.useState(false)
   const [code, setCode] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +47,9 @@ export default function EnhancedSignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
+
+    setIsLoading(true)
+    setErrors({})
 
     try {
       const validatedData = signUpSchema.parse(formData)
@@ -73,12 +78,17 @@ export default function EnhancedSignUp() {
         console.error('Clerk Error:', err)
         setErrors({ form: 'An unexpected error occurred' })
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
+
+    setIsLoading(true)
+    setErrors({})
 
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
@@ -93,6 +103,8 @@ export default function EnhancedSignUp() {
       }
     } catch (err: any) {
       setErrors({ form: err.errors?.[0]?.message || 'Verification failed. Please try again.' })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -139,7 +151,16 @@ export default function EnhancedSignUp() {
                     />
                   </div>
                   {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-                  <Button className="w-full" type="submit">Verify</Button>
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Verifying...
+                      </>
+                    ) : (
+                      'Verify'
+                    )}
+                  </Button>
                 </form>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -165,7 +186,16 @@ export default function EnhancedSignUp() {
                     </div>
                   ))}
                   {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-                  <Button className="w-full" type="submit">Sign Up</Button>
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing Up...
+                      </>
+                    ) : (
+                      'Sign Up'
+                    )}
+                  </Button>
                 </form>
               )}
             </CardContent>

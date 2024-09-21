@@ -3,7 +3,6 @@ import { Montserrat } from "next/font/google"; // No 'as', direct import
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
-import { GlobalContextProvider } from "@/lib/globalContext";
 import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/nextjs";
 import NextTopLoader from "nextjs-toploader";
@@ -42,7 +41,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <GlobalContextProvider>
+         
               {children}
               <Toaster position="top-center" reverseOrder={false} />
               <NextTopLoader
@@ -50,7 +49,7 @@ export default function RootLayout({
                 showSpinner={false}
                 easing="cubic-bezier(0.53,0.21,0,1)"
               />
-            </GlobalContextProvider>
+     
           </ThemeProvider>
         </body>
       </html>
