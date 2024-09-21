@@ -90,12 +90,12 @@ export default function CalendarView() {
                                                         </div>
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="max-w-md">
+                                                <DialogContent >
                                                     <DialogHeader>
                                                         <DialogTitle>{format(day, 'MMMM d, yyyy')}</DialogTitle>
                                                     </DialogHeader>
-                                                    <ScrollArea className="max-h-[60vh]">
-                                                        <div className="flex flex-col gap-2">
+                                                    <ScrollArea className="max-h-[60vh] p-4">
+                                                        <div className="flex flex-col gap-4">
                                                             {dayTasks.map((task) => (
                                                                 <TaskItem key={task.id} task={task} />
                                                             ))}

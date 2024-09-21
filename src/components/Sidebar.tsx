@@ -30,8 +30,8 @@ export default function Component() {
                 <div className="flex flex-col h-full">
                     <div className="p-4 border-b">
                         <div className="flex items-center space-x-4">
-                            <Avatar className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
-                                <AvatarImage src={imageUrl} alt="Profile" />
+                            <Avatar className="cursor-pointer  hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
+                                <AvatarImage className="object-cover" src={imageUrl} alt="Profile" />
                                 <AvatarFallback>{firstName?.charAt(0)}{lastName?.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div>
@@ -85,7 +85,7 @@ export default function Component() {
                                     <div className="flex items-center space-x-4">
                                         <SheetClose asChild>
                                             <Avatar className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
-                                                <AvatarImage src={imageUrl} alt="Profile" />
+                                                <AvatarImage className="object-cover" src={imageUrl} alt="Profile" />
                                                 <AvatarFallback>{firstName?.charAt(0)}{lastName?.charAt(0)}</AvatarFallback>
                                             </Avatar>
                                         </SheetClose>

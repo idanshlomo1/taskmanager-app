@@ -24,7 +24,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
   const handleClose = () => setIsOpen(false)
 
   return (
-    <div className="w-full  mx-auto h-[80vh] border flex flex-col bg-background rounded-lg overflow-hidden">
+    <div className="w-full md:h-[80vh] mx-auto border flex flex-col bg-background rounded-lg overflow-hidden">
       <div className="flex items-center justify-between p-6 border-b">
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         <Button onClick={handleOpen} size="sm" className="gap-2">
@@ -32,6 +32,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
           New Task
         </Button>
       </div>
+
 
       <ScrollArea className="flex-grow p-4">
         {isInitialLoading ? (

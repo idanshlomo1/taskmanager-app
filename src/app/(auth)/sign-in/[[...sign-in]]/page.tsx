@@ -123,7 +123,7 @@ export default function EnhancedSignIn() {
                   Forgot Password?
                 </Link>
               </div>
-              <div className="relative my-8">
+              {/* <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
@@ -135,7 +135,7 @@ export default function EnhancedSignIn() {
                 <FcGoogle className="mr-2 h-4 w-4" />
                 Google
               </Button>
-              <GoogleOneTap />
+              <GoogleOneTap /> */}
             </CardContent>
             <CardFooter>
               <p className="text-sm text-muted-foreground text-center w-full">
