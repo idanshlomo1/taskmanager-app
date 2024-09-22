@@ -10,16 +10,41 @@ import NextTopLoader from "nextjs-toploader";
 // Directly use Montserrat without renaming
 const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-montserrat", // Custom variable name
 });
 
 export const metadata: Metadata = {
   title: "Task Manager Application",
-  description: "Built using Next.js",
+  description: "Organize your tasks efficiently with our Task Manager built using Next.js.",
   icons: {
     icon: "/is-logo.svg",
   },
+  openGraph: {
+    title: "Task Manager Application",
+    description: "Efficiently manage your tasks with the Task Manager app, built using Next.js.",
+    url: process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app/",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/images/taskmanager-banner.png`,
+        width: 1200,
+        height: 630,
+        alt: "Task Manager Application",
+      },
+    ],
+    siteName: "Task Manager",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Task Manager Application",
+    description: "Efficient task management with our Task Manager built in Next.js.",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/images/taskmanager-banner.png`,
+        alt: "Task Manager Application",
+      },
+    ],
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -30,10 +55,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={cn(
-            "antialiased ", // Customize your background gradient
-            montserrat.variable // Apply Montserrat specifically
-          )}
+          className={cn(`antialiased ${montserrat.className} `)}
         >
           <ThemeProvider
             attribute="class"

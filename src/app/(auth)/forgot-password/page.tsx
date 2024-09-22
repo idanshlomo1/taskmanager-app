@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from 'next/link'
+import { Loader2 } from 'lucide-react'
 
 export default function EnhancedForgotPassword() {
   const { isLoaded, signIn, setActive } = useSignIn()
@@ -18,12 +19,14 @@ export default function EnhancedForgotPassword() {
   const [successfulCreation, setSuccessfulCreation] = React.useState(false)
   const [secondFactor, setSecondFactor] = React.useState(false)
   const [error, setError] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(false) // Add loading state
   const router = useRouter()
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
 
+    setIsLoading(true) // Start loading
     try {
       await signIn.create({
         strategy: 'reset_password_email_code',
@@ -34,6 +37,8 @@ export default function EnhancedForgotPassword() {
     } catch (err: any) {
       console.error('Error:', err.errors[0].longMessage)
       setError(err.errors[0].longMessage)
+    } finally {
+      setIsLoading(false) // Stop loading
     }
   }
 
@@ -41,6 +46,7 @@ export default function EnhancedForgotPassword() {
     e.preventDefault()
     if (!isLoaded) return
 
+    setIsLoading(true) // Start loading
     try {
       const result = await signIn.attemptFirstFactor({
         strategy: 'reset_password_email_code',
@@ -60,6 +66,8 @@ export default function EnhancedForgotPassword() {
     } catch (err: any) {
       console.error('Error:', err.errors[0].longMessage)
       setError(err.errors[0].longMessage)
+    } finally {
+      setIsLoading(false) // Stop loading
     }
   }
 
@@ -105,7 +113,16 @@ export default function EnhancedForgotPassword() {
                     />
                   </div>
                   {error && <p className="text-sm text-destructive">{error}</p>}
-                  <Button className="w-full" type="submit">Send Reset Code</Button>
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending Code...
+                      </>
+                    ) : (
+                      'Send Reset Code'
+                    )}
+                  </Button>
                 </form>
               ) : (
                 <form onSubmit={handleResetPassword} className="space-y-4">
@@ -130,7 +147,16 @@ export default function EnhancedForgotPassword() {
                     />
                   </div>
                   {error && <p className="text-sm text-destructive">{error}</p>}
-                  <Button className="w-full" type="submit">Reset Password</Button>
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Resetting Password...
+                      </>
+                    ) : (
+                      'Reset Password'
+                    )}
+                  </Button>
                 </form>
               )}
               {secondFactor && <p className="text-sm text-warning mt-2">2FA is required, but this UI does not handle that</p>}
