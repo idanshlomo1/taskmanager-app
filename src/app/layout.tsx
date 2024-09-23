@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app/",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/images/taskmanager-banner.png`,
+        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/is-logo.svg`,
         width: 1200,
         height: 630,
         alt: "Task Manager Application",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     description: "Efficient task management with our Task Manager built in Next.js.",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/images/taskmanager-banner.png`,
+        url: `${process.env.NEXT_PUBLIC_URL || "https://taskmanager-app-psi.vercel.app"}/is-logo.svg`,
         alt: "Task Manager Application",
       },
     ],
