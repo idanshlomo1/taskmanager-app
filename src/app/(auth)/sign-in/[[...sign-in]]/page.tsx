@@ -58,95 +58,80 @@ export default function EnhancedSignIn() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/20 to-secondary/20">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden">
-        <motion.div
-          className=" w-full md:w-1/2  bg-gradient-to-tr from-blue-500 to-blue-400 p-12 flex flex-col justify-center items-center text-white"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-4xl font-bold mb-4">Task Manager</h1>
-          <p className="text-xl mb-8">Organize your tasks efficiently</p>
-          <img
-            src="/is-logo.svg"
-            alt="Task Manager Banner"
-            className="rounded-xl w-24"
-          />
-        </motion.div>
-        <motion.div
-          className="w-full md:w-1/2 bg-background p-12"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Card className="w-full bg-transparent shadow-none">
-            <CardHeader >
-              <CardTitle className="text-3xl">Sign In</CardTitle>
-              <CardDescription>Welcome back to Task Manager</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="emailOrUsername">Email or Username</Label>
-                  <Input
-                    id="emailOrUsername"
-                    placeholder="Enter your email or username"
-                    value={emailOrUsername}
-                    onChange={(e) => setEmailOrUsername(e.target.value)}
-                  />
+    <div className="min-h-screen relative overflow-hidden pt-24 pb-12">
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={{
+          background: [
+            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
+            'radial-gradient(circle, rgba(129,140,248,0.15) 0%, rgba(236,72,153,0.15) 100%)',
+            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
+          ],
+        }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-md mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="w-full bg-background/80 backdrop-blur-sm shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-3xl font-bold text-center">Sign In</CardTitle>
+                <CardDescription className="text-center">Welcome back to Task Manager</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="emailOrUsername">Email or Username</Label>
+                    <Input
+                      id="emailOrUsername"
+                      placeholder="Enter your email or username"
+                      value={emailOrUsername}
+                      onChange={(e) => setEmailOrUsername(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  {error && <p className="text-sm text-destructive">{error}</p>}
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing In...
+                      </>
+                    ) : (
+                      'Sign In'
+                    )}
+                  </Button>
+                </form>
+                <div className="mt-4 text-center">
+                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot Password?
+                  </Link>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
-                <Button className="w-full" type="submit" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing In...
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
-                </Button>
-              </form>
-              <div className="mt-4 text-right">
-                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                  Forgot Password?
-                </Link>
-              </div>
-              {/* <div className="relative my-8">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-                <FcGoogle className="mr-2 h-4 w-4" />
-                Google
-              </Button>
-              <GoogleOneTap /> */}
-            </CardContent>
-            <CardFooter>
-              <p className="text-sm text-muted-foreground text-center w-full">
-                Don&apos;t have an account?{' '}
-                <Link href="/sign-up" className="text-primary hover:underline">
-                  Sign up
-                </Link>
-              </p>
-            </CardFooter>
-          </Card>
-        </motion.div>
+              </CardContent>
+              <CardFooter>
+                <p className="text-sm text-muted-foreground text-center w-full">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/sign-up" className="text-primary hover:underline">
+                    Sign up
+                  </Link>
+                </p>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   )

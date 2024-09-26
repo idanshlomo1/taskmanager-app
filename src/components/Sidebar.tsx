@@ -26,16 +26,16 @@ export default function Component() {
 
     return (
         <nav>
-            <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background">
+         <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background/80 backdrop-blur-sm shadow-sm">
                 <div className="flex flex-col h-full">
                     <div className="p-4 border-b">
                         <div className="flex items-center space-x-4">
-                            <Avatar className="cursor-pointer  hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
+                            <Avatar className="cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/account')}>
                                 <AvatarImage className="object-cover" src={imageUrl} alt="Profile" />
                                 <AvatarFallback>{firstName?.charAt(0)}{lastName?.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div>
-                                <p className="font-medium">{firstName} {lastName}</p>
+                                <p className="font-medium text-primary">{firstName} {lastName}</p>
                                 <p className="text-sm text-muted-foreground">{user?.username || 'Task Manager'}</p>
                             </div>
                         </div>
@@ -48,8 +48,8 @@ export default function Component() {
                                     className={cn(
                                         "flex items-center space-x-3 px-4 py-2 text-sm font-medium rounded-md transition-colors",
                                         item.link === pathName
-                                            ? "bg-secondary text-secondary-foreground"
-                                            : "text-muted-foreground hover:bg-secondary/50 hover:text-secondary-foreground"
+                                            ? "bg-primary text-primary-foreground"
+                                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                     )}
                                 >
                                     {item.icon}
@@ -61,7 +61,7 @@ export default function Component() {
                     <div className="p-4 border-t">
                         <Button
                             variant="ghost"
-                            className="w-full justify-start space-x-2"
+                            className="w-full justify-start space-x-2 hover:bg-primary/10 hover:text-primary"
                             onClick={() => router.push('/guide')}
                         >
                             <ShieldQuestion size={20} />

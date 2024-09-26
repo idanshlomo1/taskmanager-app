@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Pencil, Loader as Spinner } from "lucide-react"; // Reusing Spinner here for consistency
+import { Pencil, Loader } from "lucide-react";
 import { Task } from "@/lib/types";
 import { DatePickerDemo } from "./DatePickerDemo";
-import toast from "react-hot-toast"; // Import toast for error messages
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; // Import tooltip components
+import toast from "react-hot-toast";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 interface EditTaskDialogProps {
   task: Task;
@@ -45,7 +45,6 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Client-side validation
     if (!editedTask.title || editedTask.title.length < 3) {
       toast.error("Title must be at least 3 characters long");
       return;
@@ -73,8 +72,8 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Pencil className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+                <Pencil className="h-4 w-4 text-primary" />
               </Button>
             </DialogTrigger>
           </TooltipTrigger>
@@ -84,15 +83,15 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
         </Tooltip>
       </TooltipProvider>
 
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px] bg-background">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <DialogTitle className="text-primary">Edit Task</DialogTitle>
         </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title" className="text-primary">Title</Label>
             <Input
-              className="text-primary"
+              className="text-primary bg-background"
               type="text"
               id="title"
               name="title"
@@ -101,14 +100,14 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               onChange={handleInputChange}
               required
             />
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-muted-foreground">
               {editedTask.title.length}/{MAX_TITLE_LENGTH} characters
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description" className="text-primary">Description</Label>
             <Textarea
-              className="text-primary"
+              className="text-primary bg-background"
               id="description"
               name="description"
               value={editedTask.description}
@@ -116,12 +115,12 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
               onChange={handleInputChange}
             />
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-muted-foreground">
               {editedTask.description.length}/{MAX_DESCRIPTION_LENGTH} characters
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="date">Due date</Label>
+            <Label htmlFor="date" className="text-primary">Due date</Label>
             <DatePickerDemo
               date={editedTask.date ? new Date(editedTask.date) : undefined}
               onDateChange={handleDateChange}
@@ -133,8 +132,9 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               id="isCompleted"
               checked={editedTask.isCompleted}
               onChange={handleCheckboxChange("isCompleted")}
+              className="text-primary"
             />
-            <Label htmlFor="isCompleted">Completed Task</Label>
+            <Label htmlFor="isCompleted" className="text-primary">Completed Task</Label>
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -142,12 +142,13 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
               id="isImportant"
               checked={editedTask.isImportant}
               onChange={handleCheckboxChange("isImportant")}
+              className="text-primary"
             />
-            <Label htmlFor="isImportant">Important Task</Label>
+            <Label htmlFor="isImportant" className="text-primary">Important Task</Label>
           </div>
-          <Button className="mt-4" disabled={isLoading || editedTask.title.length > MAX_TITLE_LENGTH || editedTask.description.length > MAX_DESCRIPTION_LENGTH}>
+          <Button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading || editedTask.title.length > MAX_TITLE_LENGTH || editedTask.description.length > MAX_DESCRIPTION_LENGTH}>
             {isLoading ? (
-              <Spinner size={20} className="animate-spin" /> // Reuse the Spinner here
+              <Loader size={20} className="animate-spin" />
             ) : (
               "Save Changes"
             )}

@@ -109,106 +109,106 @@ export default function EnhancedSignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/20 to-secondary/20">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden">
-        <motion.div
-          className="w-full md:w-1/2  bg-gradient-to-tr from-blue-500 to-blue-400 p-12 flex flex-col justify-center items-center text-white"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-4xl font-bold mb-4">Task Manager</h1>
-          <p className="text-xl mb-8">Join us and start organizing your tasks efficiently</p>
-          <img
-            src="/is-logo.svg"
-            alt="Task Manager Banner"
-            className="rounded-xl w-24"
-          />
-        </motion.div>
-        <motion.div
-          className="w-full md:w-1/2 bg-background p-12"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Card className="w-full bg-transparent shadow-none">
-            <CardHeader>
-              <CardTitle className="text-3xl">{verifying ? 'Verify Email' : 'Sign Up'}</CardTitle>
-              <CardDescription>
-                {verifying ? 'Enter the code sent to your email' : 'Create your Task Manager account'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {verifying ? (
-                <form onSubmit={handleVerify} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="code">Verification Code</Label>
-                    <Input
-                      id="code"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="Enter verification code"
-                    />
-                  </div>
-                  {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Verifying...
-                      </>
-                    ) : (
-                      'Verify'
-                    )}
-                  </Button>
-                </form>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {[
-                    { id: 'email', label: 'Email', type: 'email' },
-                    { id: 'username', label: 'Username', type: 'text' },
-                    { id: 'firstName', label: 'First name', type: 'text' },
-                    { id: 'lastName', label: 'Last name', type: 'text' },
-                    { id: 'password', label: 'Password', type: 'password' },
-                    { id: 'confirmPassword', label: 'Confirm Password', type: 'password' },
-                  ].map(({ id, label, type }) => (
-                    <div key={id} className="space-y-2">
-                      <Label htmlFor={id}>{label}</Label>
+    <div className="min-h-screen relative overflow-hidden pt-24 pb-12">
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={{
+          background: [
+            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
+            'radial-gradient(circle, rgba(129,140,248,0.15) 0%, rgba(236,72,153,0.15) 100%)',
+            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
+          ],
+        }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-md mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="w-full bg-background/80 backdrop-blur-sm shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-3xl font-bold text-center">
+                  {verifying ? 'Verify Email' : 'Sign Up'}
+                </CardTitle>
+                <CardDescription className="text-center">
+                  {verifying ? 'Enter the code sent to your email' : 'Create your Task Manager account'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {verifying ? (
+                  <form onSubmit={handleVerify} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="code">Verification Code</Label>
                       <Input
-                        id={id}
-                        name={id}
-                        type={type}
-                        value={formData[id as keyof typeof formData]}
-                        onChange={handleChange}
-                        placeholder={`Enter your ${label.toLowerCase()}`}
+                        id="code"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Enter verification code"
                       />
-                      {errors[id] && <p className="text-sm text-destructive">{errors[id]}</p>}
                     </div>
-                  ))}
-                  {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing Up...
-                      </>
-                    ) : (
-                      'Sign Up'
-                    )}
-                  </Button>
-                </form>
-              )}
-            </CardContent>
-            <CardFooter>
-              <p className="text-sm text-muted-foreground text-center w-full">
-                Already have an account?{' '}
-                <Link href="/sign-in" className="text-primary hover:underline">
-                  Sign in
-                </Link>
-              </p>
-            </CardFooter>
-          </Card>
-        </motion.div>
+                    {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
+                    <Button className="w-full" type="submit" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        'Verify'
+                      )}
+                    </Button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {[
+                      { id: 'email', label: 'Email', type: 'email' },
+                      { id: 'username', label: 'Username', type: 'text' },
+                      { id: 'firstName', label: 'First name', type: 'text' },
+                      { id: 'lastName', label: 'Last name', type: 'text' },
+                      { id: 'password', label: 'Password', type: 'password' },
+                      { id: 'confirmPassword', label: 'Confirm Password', type: 'password' },
+                    ].map(({ id, label, type }) => (
+                      <div key={id} className="space-y-2">
+                        <Label htmlFor={id}>{label}</Label>
+                        <Input
+                          id={id}
+                          name={id}
+                          type={type}
+                          value={formData[id as keyof typeof formData]}
+                          onChange={handleChange}
+                          placeholder={`Enter your ${label.toLowerCase()}`}
+                        />
+                        {errors[id] && <p className="text-sm text-destructive">{errors[id]}</p>}
+                      </div>
+                    ))}
+                    {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
+                    <Button className="w-full" type="submit" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing Up...
+                        </>
+                      ) : (
+                        'Sign Up'
+                      )}
+                    </Button>
+                  </form>
+                )}
+              </CardContent>
+              <CardFooter>
+                <p className="text-sm text-muted-foreground text-center w-full">
+                  Already have an account?{' '}
+                  <Link href="/sign-in" className="text-primary hover:underline">
+                    Sign in
+                  </Link>
+                </p>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   )

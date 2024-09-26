@@ -24,15 +24,14 @@ export default function Tasks({ title, tasks }: TasksProps) {
   const handleClose = () => setIsOpen(false)
 
   return (
-    <div className="w-full md:h-[80vh] mx-auto border flex flex-col bg-background rounded-lg overflow-hidden">
+    <div className="w-full md:h-[80vh] mx-auto border flex flex-col bg-background/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm">
       <div className="flex items-center justify-between p-6 border-b">
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-primary">{title}</h1>
         <Button onClick={handleOpen} size="sm" className="gap-2">
           <PlusCircle className="h-4 w-4" />
           New Task
         </Button>
       </div>
-
 
       <ScrollArea className="flex-grow p-4">
         {isInitialLoading ? (
@@ -48,7 +47,7 @@ export default function Tasks({ title, tasks }: TasksProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="space-y-4  mx-auto"
+              className="space-y-4 mx-auto"
             >
               {tasks.map((task) => (
                 <TaskItem key={task.id} task={task} />

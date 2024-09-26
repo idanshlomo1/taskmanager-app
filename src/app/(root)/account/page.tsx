@@ -1,13 +1,12 @@
 "use client"
 
 import React, { useState } from 'react'
-import { UserCircle, LogOut, ArrowLeft } from 'lucide-react'
+import { UserCircle, LogOut, ArrowLeft, Loader2 } from 'lucide-react'
 import { useClerk, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Loader2 } from 'lucide-react'
 
 export default function AccountPage() {
   const { signOut, openUserProfile } = useClerk()
@@ -15,24 +14,24 @@ export default function AccountPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSignOut = async () => {
-    setIsLoading(true) // Set loading state to true
+    setIsLoading(true)
     try {
-      await signOut() // Attempt to sign out
+      await signOut()
     } catch (error) {
-      console.error('Error signing out:', error) // Handle error if necessary
+      console.error('Error signing out:', error)
     } finally {
-      setIsLoading(false) // Reset loading state
+      setIsLoading(false)
     }
   }
 
   return (
     <main className="h-full pt-12 md:pt-0">
-      <div className="w-full h-[80vh] border flex flex-col bg-background rounded-lg overflow-hidden">
+      <div className="w-full h-[80vh] border flex flex-col bg-background/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm">
         <div className="flex items-center justify-between p-6 border-b">
-          <h1 className="text-3xl font-bold tracking-tight">Account Details</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">Account Details</h1>
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="text-primary border-primary hover:bg-primary/10">
                 <ArrowLeft className="mr-2 h-4 w-4" /> Back to Tasks
               </Button>
             </Link>
@@ -41,14 +40,14 @@ export default function AccountPage() {
         <ScrollArea className="flex-grow p-6">
           <div className="space-y-4">
             <AccountItem
-              icon={<UserCircle className="h-6 w-6" />}
+              icon={<UserCircle className="h-6 w-6 text-primary" />}
               title="Profile Information"
               description="Manage your personal details"
               buttonText="Edit Profile"
               onClick={openUserProfile}
             />
             <AccountItem
-              icon={<LogOut className="h-6 w-6" />}
+              icon={<LogOut className="h-6 w-6 text-destructive" />}
               title="Sign Out"
               description="Securely log out of your account"
               buttonText={
@@ -59,7 +58,7 @@ export default function AccountPage() {
               }
               onClick={handleSignOut}
               variant="destructive"
-              disabled={isLoading} // Disable the button while loading
+              disabled={isLoading}
             />
           </div>
         </ScrollArea>
@@ -80,16 +79,21 @@ interface AccountItemProps {
 
 function AccountItem({ icon, title, description, buttonText, onClick, variant = 'default', disabled = false }: AccountItemProps) {
   return (
-    <Card>
+    <Card className="bg-background/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-shadow">
       <CardHeader className="flex flex-row items-center gap-4">
         {icon}
         <div>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-primary">{title}</CardTitle>
+          <CardDescription className="text-muted-foreground">{description}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
-        <Button onClick={onClick} variant={variant} className="w-full" disabled={disabled}>
+        <Button 
+          onClick={onClick} 
+          variant={variant} 
+          className={`w-full ${variant === 'default' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`} 
+          disabled={disabled}
+        >
           {buttonText}
         </Button>
       </CardContent>

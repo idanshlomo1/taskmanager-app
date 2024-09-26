@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { format } from 'date-fns'
-import { CheckCircle, Circle, Star, Pencil, Trash2, Loader } from 'lucide-react'
+import { CheckCircle, Circle, Star, Pencil, Trash2, Loader, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -22,6 +22,7 @@ export default function TaskItem({ task }: TaskItemProps) {
     const { id, title, description, date, isCompleted, isImportant } = task
     const [isCompletedLoading, setIsCompletedLoading] = useState(false)
     const [isImportantLoading, setIsImportantLoading] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false)
     const { updateTask, deleteTask } = useGlobalUpdate()
 
     const handleToggleCompleted = async () => {
@@ -44,27 +45,59 @@ export default function TaskItem({ task }: TaskItemProps) {
         await deleteTask(id)
     }
 
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded)
+    }
+
+    const truncateText = (text: string, maxLength: number) => {
+        if (text.length <= maxLength) return text;
+        return text.slice(0, maxLength) + '...';
+    }
+
     return (
         <motion.div
-            className='max-w-4xl'
+            className='w-full'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
         >
-            <Card className={cn("transition-all duration-300 bg-accent shadow-sm hover:shadow-lg  ", isCompleted && "opacity-60 bg-accent")}>
-                <CardHeader className="pb-2 ">
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg font-semibold line-clamp-1 break-words">{title}</CardTitle>
+            <Card className={cn(
+                "transition-all duration-300 bg-background/80 backdrop-blur-sm shadow-sm hover:shadow-md",
+                isCompleted && "opacity-60"
+            )}>
+                <CardHeader className="pb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <CardTitle className="text-lg font-semibold break-words text-primary">{title}</CardTitle>
+                        <Badge variant={isCompleted ? "secondary" : "default"} className="self-start sm:self-center">
+                            {isCompleted ? "Completed" : "In Progress"}
+                        </Badge>
                     </div>
                 </CardHeader>
-                <CardContent >
-                    <p className="text-sm text-muted-foreground mb-2 break-words">{description}</p>
-                    <p className="text-xs text-muted-foreground">Due: {format(new Date(date), 'PPP')}</p>
+                <CardContent>
+                    <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground break-words">
+                            {isExpanded ? description : truncateText(description, 100)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Due: {format(new Date(date), 'PPP')}</p>
+                        {description.length > 100 && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="p-0 h-auto text-primary hover:bg-primary/10"
+                                onClick={toggleExpand}
+                            >
+                                {isExpanded ? (
+                                    <>Show Less <ChevronUp className="ml-1 h-4 w-4" /></>
+                                ) : (
+                                    <>Show More <ChevronDown className="ml-1 h-4 w-4" /></>
+                                )}
+                            </Button>
+                        )}
+                    </div>
                 </CardContent>
-                <CardFooter className="w-full flex justify-between">
+                <CardFooter className="w-full flex flex-wrap justify-between gap-2">
                     <div className="flex space-x-2">
-
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -73,13 +106,14 @@ export default function TaskItem({ task }: TaskItemProps) {
                                         size="icon"
                                         onClick={handleToggleCompleted}
                                         disabled={isCompletedLoading}
+                                        className="hover:bg-primary/10"
                                     >
                                         {isCompletedLoading ? (
-                                            <Loader className="h-4 w-4 animate-spin" />
+                                            <Loader className="h-4 w-4 animate-spin text-primary" />
                                         ) : isCompleted ? (
-                                            <CheckCircle className="h-4 w-4 text-green-500" />
+                                            <CheckCircle className="h-4 w-4 text-primary" />
                                         ) : (
-                                            <Circle className="h-4 w-4" />
+                                            <Circle className="h-4 w-4 text-primary" />
                                         )}
                                     </Button>
                                 </TooltipTrigger>
@@ -96,11 +130,12 @@ export default function TaskItem({ task }: TaskItemProps) {
                                         size="icon"
                                         onClick={handleToggleImportant}
                                         disabled={isImportantLoading}
+                                        className="hover:bg-primary/10"
                                     >
                                         {isImportantLoading ? (
-                                            <Loader className="h-4 w-4 animate-spin" />
+                                            <Loader className="h-4 w-4 animate-spin text-primary" />
                                         ) : (
-                                            <Star className={cn("h-4 w-4", isImportant && "fill-yellow-400 text-yellow-400")} />
+                                            <Star className={cn("h-4 w-4", isImportant ? "fill-yellow-400 text-yellow-400" : "text-primary")} />
                                         )}
                                     </Button>
                                 </TooltipTrigger>
@@ -109,15 +144,9 @@ export default function TaskItem({ task }: TaskItemProps) {
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-
                         <EditTaskDialog task={task} onUpdateTask={handleUpdateTask} />
                         <DeleteTaskDialog task={task} onDelete={handleDelete} />
-
-
                     </div>
-                    <Badge variant={isCompleted ? "secondary" : "default"}>
-                        {isCompleted ? "Completed" : "In Progress"}
-                    </Badge>
                 </CardFooter>
             </Card>
         </motion.div>
