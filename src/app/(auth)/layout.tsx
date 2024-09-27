@@ -1,5 +1,6 @@
 
 
+import AuthenticatedWarning from '@/components/AuthenticatedWarning';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import { Metadata } from 'next';
@@ -15,14 +16,13 @@ export const metadata: Metadata = {
 };
 const AuthLayout = ({ children }: { children: ReactNode }) => {
     return (
-
-        <div className=''>
-
-            {children}
-
-            <Footer />
-        </div>
-
+        <div className="min-h-screen flex flex-col">
+        <AuthenticatedWarning />
+        <main className="flex-grow flex items-center justify-center">
+          {children}
+        </main>
+        <Footer />
+      </div>
     )
 }
 

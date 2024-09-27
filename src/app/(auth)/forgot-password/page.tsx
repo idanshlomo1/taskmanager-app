@@ -1,26 +1,31 @@
 'use client'
 
-import * as React from 'react'
+import { useState, useEffect } from 'react'
 import { useSignIn } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from 'next/link'
-import { Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
-export default function EnhancedForgotPassword() {
+export default function ForgotPassword() {
   const { isLoaded, signIn, setActive } = useSignIn()
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [code, setCode] = React.useState('')
-  const [successfulCreation, setSuccessfulCreation] = React.useState(false)
-  const [secondFactor, setSecondFactor] = React.useState(false)
-  const [error, setError] = React.useState('')
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
+  const [successfulCreation, setSuccessfulCreation] = useState(false)
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [showContent, setShowContent] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowContent(true), 300)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,14 +59,12 @@ export default function EnhancedForgotPassword() {
         password,
       })
 
-      if (result.status === 'needs_second_factor') {
-        setSecondFactor(true)
-        setError('')
-      } else if (result.status === 'complete') {
+      if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
         router.push('/')
       } else {
         console.log(result)
+        setError('Password reset failed. Please try again.')
       }
     } catch (err: any) {
       console.error('Error:', err.errors[0].longMessage)
@@ -72,29 +75,22 @@ export default function EnhancedForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-24 pb-12">
-      <motion.div
-        className="absolute inset-0 z-0"
-        animate={{
-          background: [
-            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
-            'radial-gradient(circle, rgba(129,140,248,0.15) 0%, rgba(236,72,153,0.15) 100%)',
-            'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(244,114,182,0.15) 100%)',
-          ],
-        }}
-        transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-      />
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen flex items-center w-full animated-gradient justify-center">
+      <AnimatePresence>
+        {showContent && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
+            className="z-10 w-full max-w-md"
           >
-            <Card className="w-full bg-background/80 backdrop-blur-sm shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-center">Forgot Password</CardTitle>
-                <CardDescription className="text-center">Reset your Task Manager password</CardDescription>
+            <Card className="backdrop-blur-lg bg-background/80 shadow-xl border-0">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-3xl font-bold text-primary">Forgot Password</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {successfulCreation ? 'Enter the code sent to your email' : 'Reset your password'}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {!successfulCreation ? (
@@ -107,17 +103,21 @@ export default function EnhancedForgotPassword() {
                         placeholder="Enter your email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className="bg-background/50 border-primary/20"
                       />
                     </div>
                     {error && <p className="text-sm text-destructive">{error}</p>}
-                    <Button className="w-full" type="submit" disabled={isLoading}>
+                    <Button className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600" type="submit" disabled={isLoading}>
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Sending Code...
                         </>
                       ) : (
-                        'Send Reset Code'
+                        <>
+                          Send Reset Code
+                          <ArrowRight className="ml-2 h-5 w-5 inline-block transition-transform group-hover:translate-x-1" />
+                        </>
                       )}
                     </Button>
                   </form>
@@ -131,6 +131,7 @@ export default function EnhancedForgotPassword() {
                         placeholder="Enter the reset code"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
+                        className="bg-background/50 border-primary/20"
                       />
                     </div>
                     <div className="space-y-2">
@@ -141,25 +142,28 @@ export default function EnhancedForgotPassword() {
                         placeholder="Enter your new password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className="bg-background/50 border-primary/20"
                       />
                     </div>
                     {error && <p className="text-sm text-destructive">{error}</p>}
-                    <Button className="w-full" type="submit" disabled={isLoading}>
+                    <Button className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600" type="submit" disabled={isLoading}>
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Resetting Password...
                         </>
                       ) : (
-                        'Reset Password'
+                        <>
+                          Reset Password
+                          <ArrowRight className="ml-2 h-5 w-5 inline-block transition-transform group-hover:translate-x-1" />
+                        </>
                       )}
                     </Button>
                   </form>
                 )}
-                {secondFactor && <p className="text-sm text-warning mt-2">2FA is required, but this UI does not handle that</p>}
               </CardContent>
-              <CardFooter>
-                <p className="text-sm text-muted-foreground text-center w-full">
+              <CardFooter className="flex flex-col items-center space-y-2">
+                <p className="text-sm text-muted-foreground">
                   Remember your password?{' '}
                   <Link href="/sign-in" className="text-primary hover:underline">
                     Sign in
@@ -168,8 +172,8 @@ export default function EnhancedForgotPassword() {
               </CardFooter>
             </Card>
           </motion.div>
-        </div>
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

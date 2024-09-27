@@ -31,8 +31,8 @@ export default function AccountPage() {
           <h1 className="text-3xl font-bold tracking-tight text-primary">Account Details</h1>
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="outline" size="sm" className="text-primary border-primary hover:bg-primary/10">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back to Tasks
+              <Button variant="outline" size="sm" className="text-primary hover:bg-primary/10">
+                <ArrowLeft className="mr-2 h-4 w-4" /> Go to All Tasks
               </Button>
             </Link>
           </div>

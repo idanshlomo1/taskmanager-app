@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const HomeLayout = ({ children }: { children: ReactNode }) => {
     return (
         <GlobalContextProvider>
-            <div className='min-h-screen bg-gradient-to-br from-primary/20 to-secondary/20'>
+            <div className='min-h-screen animated-gradient '>
                 <div className='flex flex-col md:gap-2 min-h-screen md:p-10 max-w-7xl mx-auto'>
                     <div className='hidden md:block'>
                         <div className='flex w-full justify-between items-center bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg shadow-sm'>
