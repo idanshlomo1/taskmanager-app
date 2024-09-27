@@ -25,7 +25,7 @@ export default function AuthenticatedWarning() {
   return (
     <div className="fixed top-0 left-0 right-0 bg-yellow-100 p-4 text-yellow-800 z-50">
       <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-center sm:text-left">You are already signed in. You don't need to be on this page.</p>
+        <p className="text-center sm:text-left">You are already signed in. You don&apos;t need to be on this page.</p>
         <div className="flex gap-2">
           <Button
             onClick={handleGoHome}
