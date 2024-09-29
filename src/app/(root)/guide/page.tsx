@@ -22,25 +22,25 @@ export default function GuidePage() {
         <ScrollArea className="flex-grow p-6">
           <div className="grid gap-6 md:grid-cols-1">
             <GuideCard
-              icon={<PlusCircle className="h-6 w-6 text-primary" />}
+              icon={<PlusCircle className="h-6 w-6 text-green-500" />}
               title="Creating Tasks"
               description="Learn how to create and manage your tasks effectively."
               details="To create a task, go to the 'Tasks' section, click on 'Add Task', fill in the necessary details like title, description, and due date, and then save it. You can also categorize tasks and assign priority levels."
             />
             <GuideCard
-              icon={<Star className="h-6 w-6 text-primary" />}
+              icon={<Star className="h-6 w-6 text-yellow-500" />}
               title="Important Tasks"
               description="Understand how to mark and prioritize important tasks."
               details="Mark a task as important by clicking the star icon next to the task title. Important tasks are highlighted and will appear at the top of your task list for better visibility."
             />
             <GuideCard
-              icon={<Clock className="h-6 w-6 text-primary" />}
+              icon={<Clock className="h-6 w-6 text-blue-500" />}
               title="Task Scheduling"
               description="Discover how to set due dates and manage your task timeline."
               details="You can set due dates for each task in the 'Add Task' or 'Edit Task' forms. Once a due date is set, tasks will appear on your calendar view, helping you manage deadlines effectively."
             />
             <GuideCard
-              icon={<CheckCircle className="h-6 w-6 text-primary" />}
+              icon={<CheckCircle className="h-6 w-6 text-purple-500" />}
               title="Task Completion"
               description="Learn how to mark tasks as completed and update them."
               details="Once you've finished a task, mark it as completed by clicking the checkbox next to the task. You can also edit any task details by selecting the task, making your changes, and saving them. Keep track of your progress by reviewing completed tasks regularly."

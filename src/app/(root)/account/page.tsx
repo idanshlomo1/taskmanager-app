@@ -1,12 +1,14 @@
 "use client"
 
 import React, { useState } from 'react'
-import { UserCircle, LogOut, ArrowLeft, Loader2 } from 'lucide-react'
+import { UserCircle, LogOut, ArrowLeft, Loader2, Mail } from 'lucide-react'
 import { useClerk, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function AccountPage() {
   const { signOut, openUserProfile } = useClerk()
@@ -38,7 +40,22 @@ export default function AccountPage() {
           </div>
         </div>
         <ScrollArea className="flex-grow p-6">
-          <div className="space-y-4">
+          <div className="space-y-6">
+            <Card className="bg-background/80 backdrop-blur-sm shadow-sm">
+              <CardHeader className="flex flex-row items-center gap-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage className="object-cover" src={user?.imageUrl} alt={user?.fullName || 'User'} />
+                  <AvatarFallback>{user?.firstName?.charAt(0) || 'U'}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-2xl text-primary">{user?.fullName}</CardTitle>
+                  <CardDescription className="text-muted-foreground flex items-center mt-1">
+                    <Mail className="h-4 w-4 mr-2" />
+                    {user?.primaryEmailAddress?.emailAddress}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
             <AccountItem
               icon={<UserCircle className="h-6 w-6 text-primary" />}
               title="Profile Information"

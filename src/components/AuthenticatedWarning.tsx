@@ -14,6 +14,10 @@ export default function AuthenticatedWarning() {
     return null
   }
 
+  if (isSignedIn) {
+    router.push('/account')
+  }
+
   const handleSignOut = () => {
     signOut(() => router.push('/'))
   }
