@@ -15,12 +15,13 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/comp
 interface EditTaskDialogProps {
   task: Task;
   onUpdateTask: (task: Task) => Promise<void>;
+  disabled?: boolean
 }
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_DESCRIPTION_LENGTH = 500;
 
-export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogProps) {
+export default function EditTaskDialog({ task, onUpdateTask ,disabled = false}: EditTaskDialogProps) {
   const [editedTask, setEditedTask] = useState(task);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function EditTaskDialog({ task, onUpdateTask }: EditTaskDialogPro
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+              <Button disabled={disabled} variant="ghost" size="icon" className="hover:bg-primary/10">
                 <Pencil className="h-4 w-4 text-primary" />
               </Button>
             </DialogTrigger>

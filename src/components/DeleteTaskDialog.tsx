@@ -10,9 +10,11 @@ import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/comp
 interface DeleteTaskDialogProps {
   task: Task
   onDelete: () => Promise<void>
+  disabled?: boolean
+
 }
 
-export default function DeleteTaskDialog({ task, onDelete }: DeleteTaskDialogProps) {
+export default function DeleteTaskDialog({ task, onDelete,disabled = false }: DeleteTaskDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -29,7 +31,7 @@ export default function DeleteTaskDialog({ task, onDelete }: DeleteTaskDialogPro
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+              <Button disabled={disabled} variant="ghost" size="icon" className="hover:bg-primary/10">
                 <Trash2 className="h-4 w-4 text-primary" />
               </Button>
             </DialogTrigger>
