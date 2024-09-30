@@ -32,7 +32,7 @@ export default function DeleteTaskDialog({ task, onDelete,disabled = false }: De
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
               <Button disabled={disabled} variant="ghost" size="icon" className="hover:bg-primary/10">
-                <Trash2 className="h-4 w-4 text-primary" />
+                <Trash2 className="h-4 w-4 text-muted-foreground" />
               </Button>
             </DialogTrigger>
           </TooltipTrigger>

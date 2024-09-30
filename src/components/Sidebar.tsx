@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion, Calendar } from "lucide-react"
+import { Home, List, CheckIcon, XIcon, LogOutIcon, MenuIcon, LucideFileQuestion, ShieldQuestion, Calendar, AlertCircle, Star, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,13 +11,49 @@ import { ModeToggle } from "./ModeToggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navItems = [
-    { id: 1, title: "All Tasks", icon: <Home size={20} />, link: "/" },
-    { id: 2, title: "Calendar", icon: <Calendar size={20} />, link: "/calendar" },
-    { id: 3, title: "Important", icon: <List size={20} />, link: "/important" },
-    { id: 4, title: "Completed", icon: <CheckIcon size={20} />, link: "/completed" },
-    { id: 5, title: "Incomplete", icon: <XIcon size={20} />, link: "/incomplete" },
-]
-
+    { 
+      id: 1, 
+      title: "All Tasks", 
+      icon: <Home size={20} />, 
+      link: "/",
+      description: "View and manage all your tasks"
+    },
+    { 
+      id: 2, 
+      title: "Calendar", 
+      icon: <Calendar size={20}  />, 
+      link: "/calendar",
+      description: "Visualize your tasks on a calendar"
+    },
+    { 
+      id: 3, 
+      title: "Important", 
+      icon: <Star size={20} className="text-orange-500" />, 
+      link: "/important",
+      description: "Focus on your high-priority tasks"
+    },
+    { 
+      id: 4, 
+      title: "Completed", 
+      icon: <CheckCircle size={20} className="text-green-500" />, 
+      link: "/completed",
+      description: "Review your accomplished tasks"
+    },
+    { 
+      id: 5, 
+      title: "Incomplete", 
+      icon: <XCircle size={20} className="text-blue-500" />, 
+      link: "/incomplete",
+      description: "Manage tasks that need attention"
+    },
+    { 
+      id: 6, 
+      title: "Missed", 
+      icon: <AlertCircle size={20} className="text-red-500" />, 
+      link: "/missed",
+      description: "Address overdue tasks"
+    },
+  ]
 export default function Component() {
     const pathName = usePathname()
     const { user } = useUser()

@@ -3,42 +3,100 @@ import React, { ReactNode } from "react"
 import { motion } from 'framer-motion'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { PlusCircle, Star, Clock, CheckCircle } from "lucide-react"
+import { PlusCircle, Star, Clock, CheckCircle, Home, Calendar, XCircle, AlertCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export default function GuidePage() {
   return (
     <motion.div 
-      className="space-y-8"
+      className="space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <h1 className="text-4xl font-bold tracking-tight">How to Use the App</h1>
-      <ScrollArea className="h-[calc(100vh-10rem)]">
+      <ScrollArea className="h-[calc(100vh-12rem)]">
         <div className="grid gap-6 pr-4">
           <GuideCard
-            icon={<PlusCircle className="h-6 w-6 text-green-500" />}
+            icon={<PlusCircle className="h-6 w-6 text-primary" />}
             title="Creating Tasks"
             description="Learn how to create and manage your tasks effectively."
-            details="To create a task, click on the 'New Task' button, fill in the necessary details like title, description, and due date, and then save it. You can also categorize tasks and assign priority levels."
+            details={
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Click on the &apos;New Task&apos; button in the top right corner of the main dashboard or calendar view.</li>
+                <li>Fill in the task title, description, and set a due date using the date picker.</li>
+                <li>Use the &apos;Important&apos; checkbox to mark high-priority tasks.</li>
+                <li>Click &apos;Create&apos; to add the task to your list.</li>
+                <li>Edit tasks anytime by clicking the edit icon next to each task.</li>
+              </ul>
+            }
           />
           <GuideCard
-            icon={<Star className="h-6 w-6 text-yellow-500" />}
+            icon={<Star className="h-6 w-6 text-orange-500" />}
             title="Important Tasks"
             description="Understand how to mark and prioritize important tasks."
-            details="Mark a task as important by clicking the star icon next to the task title. Important tasks are highlighted and will appear in the 'Important Tasks' section for better visibility."
+            details={
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Mark a task as important by checking the &apos;Important&apos; box when creating or editing a task.</li>
+                <li>Important tasks are highlighted in orange for easy identification.</li>
+                <li>View all important tasks by clicking on the &apos;Important&apos; link in the sidebar.</li>
+                <li>Important tasks are prioritized in the &apos;All Tasks&apos; view and calendar.</li>
+                <li>You can toggle the importance of a task at any time by editing it.</li>
+              </ul>
+            }
           />
           <GuideCard
-            icon={<Clock className="h-6 w-6 text-blue-500" />}
+            icon={<Clock className="h-6 w-6 text-primary" />}
             title="Task Scheduling"
             description="Discover how to set due dates and manage your task timeline."
-            details="You can set due dates for each task in the 'Add Task' or 'Edit Task' forms. Once a due date is set, tasks will appear on your calendar view, helping you manage deadlines effectively."
+            details={
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Set a due date for each task using the date picker in the create/edit task form.</li>
+                <li>View tasks on the calendar to get a clear overview of your schedule.</li>
+                <li>Past due tasks are highlighted in red to draw attention.</li>
+                <li>Use the calendar view to create tasks for specific dates by clicking on the desired day.</li>
+                <li>Easily reschedule tasks by editing them and selecting a new due date.</li>
+              </ul>
+            }
           />
           <GuideCard
-            icon={<CheckCircle className="h-6 w-6 text-purple-500" />}
+            icon={<CheckCircle className="h-6 w-6 text-green-500" />}
             title="Task Completion"
             description="Learn how to mark tasks as completed and update them."
-            details="Once you've finished a task, mark it as completed by clicking the checkbox next to the task. You can also edit any task details by selecting the task, making your changes, and saving them. Keep track of your progress by reviewing completed tasks in the 'Completed Tasks' section."
+            details={
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Mark a task as completed by clicking the checkbox next to the task title.</li>
+                <li>Completed tasks are visually distinguished with a strikethrough and green highlight.</li>
+                <li>View all completed tasks by clicking on the &apos;Completed&apos; link in the sidebar.</li>
+                <li>You can uncomplete a task by unchecking the completion box if needed.</li>
+                <li>Completed tasks are moved to the bottom of the task list in the &apos;All Tasks&apos; view.</li>
+              </ul>
+            }
+          />
+          <GuideCard
+            icon={<Home className="h-6 w-6 text-primary" />}
+            title="Navigation"
+            description="Understand how to use the app&apos;s navigation to manage your tasks efficiently."
+            details={
+              <ul className="list-disc pl-5 space-y-2">
+                {[
+                  { title: "All Tasks", icon: <Home size={20} />, link: "/", color: "text-primary" },
+                  { title: "Calendar", icon: <Calendar size={20} />, link: "/calendar", color: "text-primary" },
+                  { title: "Important", icon: <Star size={20} />, link: "/important", color: "text-orange-500" },
+                  { title: "Completed", icon: <CheckCircle size={20} />, link: "/completed", color: "text-green-500" },
+                  { title: "Incomplete", icon: <XCircle size={20} />, link: "/incomplete", color: "text-blue-500" },
+                  { title: "Missed", icon: <AlertCircle size={20} />, link: "/missed", color: "text-red-500" },
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <span className={cn("flex items-center gap-2", item.color)}>
+                      {item.icon}
+                      {item.title}
+                    </span>
+                    : Navigate to {item.link} to view and manage {item.title.toLowerCase()}.
+                  </li>
+                ))}
+              </ul>
+            }
           />
         </div>
       </ScrollArea>
@@ -50,7 +108,7 @@ type GuideCardProps = {
   icon: ReactNode
   title: string
   description: string
-  details: string
+  details: ReactNode
 }
 
 function GuideCard({ icon, title, description, details }: GuideCardProps) {
@@ -64,7 +122,7 @@ function GuideCard({ icon, title, description, details }: GuideCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{details}</p>
+        <div className="text-sm text-muted-foreground">{details}</div>
       </CardContent>
     </Card>
   )

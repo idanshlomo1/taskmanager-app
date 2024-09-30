@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { useGlobalState } from '@/lib/hooks'
 import { Task } from '@/lib/types'
 import TaskItem from './TaskItem'
+import { usePathname } from 'next/navigation'
 
 interface TasksProps {
   tasks: Task[]
@@ -16,11 +17,34 @@ interface TasksProps {
 export default function Tasks({ tasks }: TasksProps) {
   const { isInitialLoading } = useGlobalState()
   const [searchQuery, setSearchQuery] = useState('')
+  const pathname = usePathname()
 
   const filteredTasks = tasks.filter(task =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     task.description.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const getEmptyMessage = () => {
+    if (searchQuery) {
+      return "No tasks found matching your search."
+    }
+    switch (pathname) {
+      case '/':
+        return "No tasks found. Create a new task to get started."
+      case '/calendar':
+        return "No tasks scheduled. Add tasks to your calendar to see them here."
+      case '/important':
+        return "No important tasks. Mark tasks as important to see them here."
+      case '/completed':
+        return "No completed tasks. Tasks you finish will appear here."
+      case '/incomplete':
+        return "All tasks are completed. Great job!"
+      case '/missed':
+        return "No missed tasks. Keep up the good work!"
+      default:
+        return "No tasks found."
+    }
+  }
 
   return (
     <div className="w-full border flex flex-col bg-background/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-md">
@@ -61,7 +85,7 @@ export default function Tasks({ tasks }: TasksProps) {
             </AnimatePresence>
           ) : (
             <p className="text-center text-muted-foreground py-8">
-              {searchQuery ? "No tasks found matching your search." : "No tasks found. Create a new task to get started."}
+              {getEmptyMessage()}
             </p>
           )}
         </div>

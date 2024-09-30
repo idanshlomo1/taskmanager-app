@@ -31,7 +31,7 @@ const RootLayout = ({
                                 </div>
                             </header>
                         </div>
-                        <main className="flex-1 overflow-auto py-24 md:py-12 p-6">
+                        <main className="flex-1 overflow-auto py-24 md:py-6 p-6">
                             {children}
                         </main>
                     </div>

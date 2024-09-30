@@ -2,12 +2,11 @@
 
 import React, { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { format } from 'date-fns'
-import { CheckCircle, Star, ChevronDown, ChevronUp, Calendar, Clock } from 'lucide-react'
+import { format, isAfter, startOfDay } from 'date-fns'
+import { Star, ChevronDown, ChevronUp, Calendar, Circle, CheckCircle2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { Task } from '@/lib/types'
 import { useGlobalUpdate } from '@/lib/hooks'
@@ -17,12 +16,13 @@ import { useToast } from '@/hooks/use-toast'
 
 interface TaskItemProps {
     task: Task
+    isExpanded?: boolean
 }
 
-export default function TaskItem({ task: initialTask }: TaskItemProps) {
+export default function TaskItem({ task: initialTask, isExpanded: initialIsExpanded = false }: TaskItemProps) {
     const [task, setTask] = useState(initialTask)
     const [isLoading, setIsLoading] = useState(false)
-    const [isExpanded, setIsExpanded] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(initialIsExpanded)
     const { updateTask, deleteTask } = useGlobalUpdate()
     const { toast } = useToast()
 
@@ -91,6 +91,8 @@ export default function TaskItem({ task: initialTask }: TaskItemProps) {
 
     const toggleExpand = () => setIsExpanded(!isExpanded)
 
+    const isPastDue = isAfter(startOfDay(new Date()), startOfDay(new Date(task.date))) && !task.isCompleted
+
     return (
         <motion.div
             className='w-full'
@@ -100,18 +102,22 @@ export default function TaskItem({ task: initialTask }: TaskItemProps) {
             transition={{ duration: 0.2 }}
         >
             <Card className={cn(
-                "transition-all duration-300 bg-background/80 backdrop-blur-sm shadow-sm hover:shadow-md",
-                task.isCompleted && "opacity-60",
-                isLoading && "animate-pulse"
+                "transition-all duration-300 bg-gradient-to-br from-background to-background/90 backdrop-blur-sm shadow-md hover:shadow-lg border-l-4",
+                task.isCompleted ? "border-l-green-500" : isPastDue ? "border-l-red-500" : task.isImportant ? "border-l-orange-500" : "border-l-blue-500",
+                isLoading && "opacity-70"
             )}>
+                {isLoading && (
+                    <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10">
+                        <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                    </div>
+                )}
                 <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div className="flex-grow min-w-0 space-y-1">
                             <h3 className={cn(
                                 "text-lg font-semibold text-primary break-words",
-                                task.isCompleted && "line-through"
+                                task.isCompleted && "line-through text-muted-foreground"
                             )}>
-                                {task.isImportant && <Star className="inline-block h-4 w-4 fill-yellow-400 text-yellow-400 mr-2" />}
                                 {task.title}
                             </h3>
                             <div className={cn(
@@ -124,7 +130,7 @@ export default function TaskItem({ task: initialTask }: TaskItemProps) {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="p-0 h-auto text-primary hover:bg-primary/10"
+                                    className="p-0 h-auto text-primary hover:text-primary-foreground hover:bg-primary/90"
                                     onClick={toggleExpand}
                                 >
                                     {isExpanded ? (
@@ -135,59 +141,51 @@ export default function TaskItem({ task: initialTask }: TaskItemProps) {
                                 </Button>
                             )}
                         </div>
-                        <Badge variant={task.isCompleted ? "secondary" : "default"} className="whitespace-nowrap">
-                            {task.isCompleted ? "Completed" : "In Progress"}
-                        </Badge>
+                        <div className="flex flex-col items-end gap-2">
+                            <Badge 
+                                variant={task.isCompleted ? "secondary" : "default"}
+                                className={cn(
+                                    "whitespace-nowrap",
+                                    task.isCompleted ? "bg-green-100 text-green-800" : 
+                                    isPastDue ? "bg-red-100 text-red-800" : 
+                                    task.isImportant ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800"
+                                )}
+                            >
+                                {task.isCompleted ? "Completed" : isPastDue ? "Past Due" : task.isImportant ? "Priority" : "In Progress"}
+                            </Badge>
+                        </div>
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
                         <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             {format(new Date(task.date), 'PPP')}
                         </div>
-                        <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {format(new Date(task.date), 'p')}
-                        </div>
                     </div>
                 </CardContent>
-                <CardFooter className="px-4 py-2 flex justify-between items-center flex-wrap gap-2">
+                <CardFooter className="px-4 py-2 flex justify-between items-center flex-wrap gap-2 bg-muted/50">
                     <div className="flex space-x-2">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={handleToggleCompleted}
-                                        disabled={isLoading}
-                                        className="hover:bg-primary/10"
-                                    >
-                                        <CheckCircle className={cn("h-4 w-4", task.isCompleted ? "text-primary fill-primary" : "text-primary")} />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{task.isCompleted ? "Mark as incomplete" : "Mark as complete"}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={handleToggleImportant}
-                                        disabled={isLoading}
-                                        className="hover:bg-primary/10"
-                                    >
-                                        <Star className={cn("h-4 w-4", task.isImportant ? "fill-yellow-400 text-yellow-400" : "text-primary")} />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{task.isImportant ? "Remove importance" : "Mark as important"}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleToggleCompleted}
+                            disabled={isLoading}
+                            className="hover:bg-primary/10"
+                        >
+                            {task.isCompleted ? (
+                                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                            ) : (
+                                <Circle className={cn("h-4 w-4", isPastDue ? "text-red-500" : task.isImportant ? "text-orange-500" : "text-blue-500")} />
+                            )}
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleToggleImportant}
+                            disabled={isLoading}
+                            className="hover:bg-primary/10"
+                        >
+                            <Star className={cn("h-4 w-4", task.isImportant ? "fill-orange-500 text-orange-500" : "text-muted-foreground")} />
+                        </Button>
                         <EditTaskDialog task={task} onUpdateTask={handleUpdateTask} disabled={isLoading} />
                         <DeleteTaskDialog task={task} onDelete={handleDelete} disabled={isLoading} />
                     </div>
