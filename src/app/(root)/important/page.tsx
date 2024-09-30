@@ -1,18 +1,25 @@
-
 "use client"
-import Tasks from '@/components/Tasks';
-import { useGlobalState } from '@/lib/hooks';
-import React from 'react'
 
-const ImpotantPage = () => {
-    const { tasks } = useGlobalState();
-    const completedTasks = tasks.filter((task) => task.isImportant);
+import React from 'react'
+import { motion } from 'framer-motion'
+import { useGlobalState } from '@/lib/hooks'
+import Tasks from '@/components/Tasks'
+
+const ImportantPage = () => {
+    const { tasks } = useGlobalState()
+    const importantTasks = tasks.filter((task) => task.isImportant)
 
     return (
-        <main className='h-full pt-12 md:pt-0'>
-            <Tasks tasks={completedTasks} title='Important Tasks' />
-        </main>
-    );
+        <motion.div 
+            className="space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <h1 className="text-4xl font-bold tracking-tight">Important Tasks</h1>
+            <Tasks tasks={importantTasks} />
+        </motion.div>
+    )
 }
 
-export default ImpotantPage
+export default ImportantPage

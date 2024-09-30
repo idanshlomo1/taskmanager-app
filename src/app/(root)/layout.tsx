@@ -1,42 +1,45 @@
-import Footer from '@/components/Footer';
-import { ModeToggle } from '@/components/ModeToggle';
-import Sidebar from '@/components/Sidebar';
-import { GlobalContextProvider } from '@/lib/globalContext';
-import { Metadata } from 'next';
-import React, { ReactNode } from 'react'
+import { GlobalContextProvider } from '@/lib/globalContext'
+import { Metadata } from 'next'
+import { Toaster } from '@/components/ui/toaster'
+import { ModeToggle } from '@/components/ModeToggle'
+import Sidebar from '@/components/Sidebar'
 
 export const metadata: Metadata = {
     title: "Task Manager Application",
-    description: "Built using Next.js",
+    description: "Manage your tasks efficiently",
     icons: {
-        icon: '/is-logo.svg'
-    }
-};
+        icon: "/is-logo.svg",
+    },
+}
 
-const HomeLayout = ({ children }: { children: ReactNode }) => {
+const RootLayout = ({
+    children,
+}: {
+    children: React.ReactNode
+}) => {
     return (
         <GlobalContextProvider>
-            <div className='min-h-screen animated-gradient '>
-                <div className='flex flex-col md:gap-2 min-h-screen md:p-10 max-w-7xl mx-auto'>
-                    <div className='hidden md:block'>
-                        <div className='flex w-full justify-between items-center bg-background/80 backdrop-blur-sm px-6 py-4 rounded-lg shadow-sm'>
-                            <h1 className='font-bold text-2xl text-primary'>
-                                Task Manager
-                            </h1>
-                            <ModeToggle />
+            <div className="animated-gradient min-h-screen">
+                <div className="flex h-screen overflow-hidden">
+                    <Sidebar />
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        <div className='hidden md:block'>
+                            <header className="flex justify-between items-center p-4 bg-background/80 backdrop-blur-sm border-b">
+                                <h1 className="text-2xl font-bold text-center">Task Manager</h1>
+                                <div className="flex items-center space-x-4">
+                                    <ModeToggle />
+                                </div>
+                            </header>
                         </div>
-                    </div>
-                    <div className='flex md:gap-2 flex-1'>
-                        <Sidebar />
-                        <div className='w-full'>
+                        <main className="flex-1 overflow-auto py-24 md:py-12 p-6">
                             {children}
-                        </div>
+                        </main>
                     </div>
                 </div>
-                <Footer />
+                <Toaster />
             </div>
         </GlobalContextProvider>
     )
 }
 
-export default HomeLayout
+export default RootLayout

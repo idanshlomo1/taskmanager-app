@@ -26,7 +26,7 @@ export default function Component() {
 
     return (
         <nav>
-         <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border overflow-hidden bg-background/80 backdrop-blur-sm shadow-sm">
+            <div className="hidden md:flex md:flex-col h-full md:w-64 rounded-lg border-r overflow-hidden bg-background/80 backdrop-blur-sm shadow-sm">
                 <div className="flex flex-col h-full">
                     <div className="p-4 border-b">
                         <div className="flex items-center space-x-4">
