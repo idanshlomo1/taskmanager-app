@@ -61,7 +61,7 @@ export default function Tasks({ tasks }: TasksProps) {
         </div>
       </div>
 
-      <ScrollArea className="flex-grow h-[calc(100vh-16rem)]">
+      <ScrollArea className="flex-grow md:h-[calc(100vh-16rem)]">
         <div className="p-4">
           {isInitialLoading ? (
             <div className="space-y-4">
