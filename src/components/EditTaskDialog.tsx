@@ -8,12 +8,12 @@ import { Textarea } from "./ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Pencil, Loader, Star, CheckCircle2, Circle } from "lucide-react";
 import { Task } from "@/lib/types";
-import { DatePickerDemo } from "./DatePickerDemo";
 import toast from "react-hot-toast";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { isAfter, startOfDay } from "date-fns";
 import { Checkbox } from "./ui/checkbox";
+import { DatePickerDemo } from "./DatePickerDemo";
 
 interface EditTaskDialogProps {
   task: Task;

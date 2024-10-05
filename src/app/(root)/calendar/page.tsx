@@ -10,12 +10,12 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { useGlobalState } from '@/lib/hooks'
 import { cn } from '@/lib/utils'
 import TaskItem from '@/components/TaskItem'
-import CreateContent from '@/components/CreateContent'
+import BottomSheetTaskCreator from '@/components/BottomSheetTaskCreator'
 
 export default function CalendarView() {
     const [currentDate, setCurrentDate] = useState(new Date())
     const { tasks } = useGlobalState()
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
     const [isDateDialogOpen, setIsDateDialogOpen] = useState(false)
     const [selectedTask, setSelectedTask] = useState<string | null>(null)
@@ -35,7 +35,7 @@ export default function CalendarView() {
     const handleCreateTask = (date: Date) => {
         setSelectedDate(date)
         setIsDateDialogOpen(false)
-        setIsCreateDialogOpen(true)
+        setIsBottomSheetOpen(true)
     }
 
     const handleTaskClick = (taskId: string, taskDate: string) => {
@@ -67,7 +67,7 @@ export default function CalendarView() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h1 className="text-3xl font-bold tracking-tight">Calendar</h1>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-                    <Button onClick={() => setIsCreateDialogOpen(true)} className="w-full sm:w-auto">
+                    <Button onClick={() => setIsBottomSheetOpen(true)} className="w-full sm:w-auto">
                         <Plus className="mr-2 h-4 w-4" /> New Task
                     </Button>
                 </div>
@@ -224,14 +224,11 @@ export default function CalendarView() {
                 </CardContent>
             </Card>
 
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Create New Task</DialogTitle>
-                    </DialogHeader>
-                    <CreateContent handleCloseDialog={() => setIsCreateDialogOpen(false)} initialDate={selectedDate} />
-                </DialogContent>
-            </Dialog>
+            <BottomSheetTaskCreator
+                isOpen={isBottomSheetOpen}
+                onClose={() => setIsBottomSheetOpen(false)}
+                initialDate={selectedDate}
+            />
         </div>
     )
 }

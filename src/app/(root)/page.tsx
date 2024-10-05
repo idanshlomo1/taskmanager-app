@@ -5,19 +5,17 @@ import { motion } from 'framer-motion'
 import { useGlobalState } from '@/lib/hooks'
 import Tasks from '@/components/Tasks'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Plus } from 'lucide-react'
-import CreateContent from '@/components/CreateContent'
-import { DatePickerDemo } from '@/components/DatePickerDemo'
+import BottomSheetTaskCreator from '@/components/BottomSheetTaskCreator'
 
 const HomePage = () => {
     const { tasks } = useGlobalState()
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false)
 
-    const handleDateChange = (date: Date | undefined) => {
-        setSelectedDate(date)
-    }
+    const openBottomSheet = () => setIsBottomSheetOpen(true)
+    const closeBottomSheet = () => setIsBottomSheetOpen(false)
+
+
 
     return (
         <motion.div
@@ -27,24 +25,24 @@ const HomePage = () => {
             transition={{ duration: 0.5 }}
         >
             <div className="flex justify-between items-center">
-                <h1 className="text-4xl font-bold tracking-tight">All Tasks</h1>
-                <Button onClick={() => setIsCreateDialogOpen(true)}>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">All Tasks</h1>
+                <Button onClick={openBottomSheet} className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <Plus className="mr-2 h-4 w-4" /> New Task
                 </Button>
             </div>
 
-            <DatePickerDemo date={selectedDate} onDateChange={handleDateChange} />
-
             <Tasks tasks={tasks} />
 
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                <DialogContent>
-                    <DialogTitle>Create New Task</DialogTitle>
-                    <CreateContent handleCloseDialog={() => setIsCreateDialogOpen(false)} />
-                </DialogContent>
-            </Dialog>
+            <BottomSheetTaskCreator
+                isOpen={isBottomSheetOpen}
+                onClose={closeBottomSheet}
+                initialDate={new Date()}
+            />
         </motion.div>
     )
 }
 
 export default HomePage
+
+
+
