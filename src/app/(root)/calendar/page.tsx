@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday, parseISO, isAfter, startOfDay } from 'date-fns'
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -46,10 +46,14 @@ export default function CalendarView() {
         setIsDateDialogOpen(true)
     }
 
-    // Sort tasks by date
-    const sortedTasks = [...tasks].sort((a, b) =>
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-    )
+    // Sort tasks by completion status and date
+    const sortedTasks = useMemo(() => {
+        return [...tasks].sort((a, b) => {
+            if (a.isCompleted && !b.isCompleted) return 1
+            if (!a.isCompleted && b.isCompleted) return -1
+            return new Date(a.date).getTime() - new Date(b.date).getTime()
+        })
+    }, [tasks])
 
     const getTaskColor = (task: any) => {
         if (task.isCompleted) return 'bg-green-500'
@@ -122,8 +126,19 @@ export default function CalendarView() {
                     <div className="grid grid-cols-7 gap-1 sm:gap-2">
                         {monthDays.map((day) => {
                             const dayTasks = tasks.filter((task) => isSameDay(parseISO(task.date), day))
-                            const hasImportantTask = dayTasks.some(task => task.isImportant)
+                            const hasCompletedTask = dayTasks.some(task => task.isCompleted)
                             const hasPastDueTask = dayTasks.some(task => isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) && !task.isCompleted)
+                            const hasImportantTask = dayTasks.some(task => task.isImportant && !task.isCompleted)
+                            const hasInProgressTask = dayTasks.some(task => !task.isCompleted && !task.isImportant && !hasPastDueTask)
+                            
+                            const getBorderColor = () => {
+                                if (hasPastDueTask) return 'border-l-red-500'
+                                if (hasImportantTask) return 'border-l-orange-500'
+                                if (hasInProgressTask) return 'border-l-blue-500'
+                                if (hasCompletedTask) return 'border-l-green-500'
+                                return ''
+                            }
+
                             return (
                                 <Dialog key={day.toISOString()} open={isDateDialogOpen && isSameDay(day, selectedDate || new Date())} onOpenChange={(open) => {
                                     if (open) {
@@ -139,11 +154,11 @@ export default function CalendarView() {
                                             variant="outline"
                                             className={cn(
                                                 "h-12 sm:h-20 p-1 font-normal text-xs sm:text-sm flex flex-col items-start justify-start overflow-hidden",
+                                                "border-l-4 transition-all duration-300",
                                                 !isSameMonth(day, monthStart) && "text-muted-foreground opacity-50",
                                                 isToday(day) && "bg-primary/10 relative",
                                                 dayTasks.length > 0 && "bg-secondary/50",
-                                                hasPastDueTask && "ring-2 ring-red-400",
-                                                !hasPastDueTask && hasImportantTask && "ring-2 ring-orange-400"
+                                                getBorderColor()
                                             )}
                                         >
                                             {isToday(day) && (
@@ -163,8 +178,10 @@ export default function CalendarView() {
                                                 {dayTasks.slice(0, 2).map((task, index) => (
                                                     <div key={index} className={cn(
                                                         "text-[0.6rem] sm:text-xs truncate text-left",
-                                                        isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) && !task.isCompleted ? "text-red-500 font-semibold" :
-                                                        task.isImportant && "text-orange-500 font-semibold"
+                                                        task.isCompleted ? "text-green-500" :
+                                                        isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) ? "text-red-500 font-semibold" :
+                                                        task.isImportant ? "text-orange-500 font-semibold" :
+                                                        "text-blue-500"
                                                     )}>
                                                         {task.title}
                                                     </div>
