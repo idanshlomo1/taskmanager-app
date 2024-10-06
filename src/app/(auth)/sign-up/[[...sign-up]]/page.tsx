@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { z } from 'zod'
 import { ArrowRight, Loader2 } from 'lucide-react'
 
+// Zod schema for form validation
 const signUpSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
@@ -44,10 +45,12 @@ export default function SignUp() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  // Handle form submission for sign up
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
@@ -56,29 +59,23 @@ export default function SignUp() {
     setErrors({})
 
     try {
+      // Validate form data using Zod
       const validatedData = signUpSchema.parse(formData)
-      
-      // Attempt to create the user
-      const result = await signUp.create({
+
+      // Create sign-up using Clerk
+      await signUp.create({
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
         emailAddress: validatedData.email,
         password: validatedData.password,
       })
 
-      // Check if there's an error related to password strength
-      if (result.status === "complete") {
-        // Sign up was successful, proceed with email verification
-        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-        setVerifying(true)
-      } else {
-        // Handle other potential issues
-        console.error('Unexpected result:', result)
-        setErrors({ form: 'An unexpected error occurred during sign up.' })
-      }
-    } catch (err: any) {
+      // Prepare email verification
+      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+      setVerifying(true)
+    } catch (err) {
+      // Handle Zod validation errors
       if (err instanceof z.ZodError) {
-        // Handle Zod validation errors (same as before)
         const fieldErrors = err.flatten().fieldErrors
         const simplifiedErrors: Record<string, string> = {}
         for (const key in fieldErrors) {
@@ -87,26 +84,35 @@ export default function SignUp() {
           }
         }
         setErrors(simplifiedErrors)
-      } else if (err.errors && err.errors.length > 0) {
-        // Handle Clerk API errors
-        const clerkError = err.errors[0]
-        if (clerkError.code === 'form_password_pwned') {
-          setErrors({ password: 'This password was found in a data breach. Please choose a stronger password.' })
-        } else if (clerkError.code === 'form_password_validation_failed') {
-          setErrors({ password: clerkError.longMessage || 'Password is too weak. Please choose a stronger password.' })
+      } 
+      // Handle Clerk API errors
+      else if (err instanceof Error && 'errors' in err) {
+        const clerkError = err as { errors: { message: string }[] }
+        const errorMessage = clerkError.errors[0].message
+
+        // Map Clerk-specific error messages
+        if (errorMessage.toLowerCase().includes('weak password')) {
+          setErrors({ password: 'Your password is too weak. Please choose a stronger one.' })
+        } else if (errorMessage.toLowerCase().includes('data breach')) {
+          setErrors({ password: 'This password has been found in a data breach. Please use a different one.' })
+        } else if (errorMessage.toLowerCase().includes('email address is already taken')) {
+          setErrors({ email: 'This email address is already registered. Please use another email.' })
         } else {
-          console.error('Clerk Error:', err)
-          setErrors({ form: clerkError.longMessage || 'An unexpected error occurred' })
+          // Default error message for Clerk errors
+          setErrors({ form: errorMessage || 'An unexpected error occurred. Please try again.' })
         }
-      } else {
-        console.error('Unknown Error:', err)
-        setErrors({ form: 'An unexpected error occurred' })
+      } 
+      // Handle unexpected errors
+      else {
+        console.error('Unexpected Error:', err)
+        setErrors({ form: 'An unexpected error occurred. Please try again.' })
       }
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Handle email verification
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
@@ -125,8 +131,13 @@ export default function SignUp() {
       } else {
         setErrors({ form: 'Verification failed. Please try again.' })
       }
-    } catch (err: any) {
-      setErrors({ form: err.errors?.[0]?.message || 'Verification failed. Please try again.' })
+    } catch (err: unknown) {
+      if (err instanceof Error && 'errors' in err) {
+        const clerkError = err as { errors: { message: string }[] }
+        setErrors({ form: clerkError.errors[0].message || 'Verification failed. Please try again.' })
+      } else {
+        setErrors({ form: 'Verification failed. Please try again.' })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -145,10 +156,10 @@ export default function SignUp() {
           >
             <Card className="backdrop-blur-lg bg-background/80 shadow-xl border-0">
               <CardHeader className="space-y-1">
-                <CardTitle className="text-3xl font-bold text-primary">
+                <CardTitle className="text-2xl sm:text-3xl font-bold text-primary">
                   {verifying ? 'Verify Email' : 'Sign Up'}
                 </CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-sm sm:text-base text-muted-foreground">
                   {verifying ? 'Enter the code sent to your email' : 'Create your account'}
                 </CardDescription>
               </CardHeader>
@@ -175,14 +186,14 @@ export default function SignUp() {
                       ) : (
                         <>
                           Verify
-                          <ArrowRight className="ml-2 h-5 w-5 inline-block transition-transform group-hover:translate-x-1" />
+                          <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 inline-block transition-transform group-hover:translate-x-1" />
                         </>
                       )}
                     </Button>
                   </form>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">First Name</Label>
                         <Input
@@ -259,7 +270,7 @@ export default function SignUp() {
                       ) : (
                         <>
                           Sign Up
-                          <ArrowRight className="ml-2 h-5 w-5 inline-block transition-transform group-hover:translate-x-1" />
+                          <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 inline-block transition-transform group-hover:translate-x-1" />
                         </>
                       )}
                     </Button>
