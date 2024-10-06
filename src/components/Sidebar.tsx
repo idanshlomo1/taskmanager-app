@@ -11,49 +11,49 @@ import { ModeToggle } from "./ModeToggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navItems = [
-    { 
-      id: 1, 
-      title: "All Tasks", 
-      icon: <Home size={20} />, 
-      link: "/",
-      description: "View and manage all your tasks"
+    {
+        id: 1,
+        title: "All Tasks",
+        icon: <Home size={20} />,
+        link: "/",
+        description: "View and manage all your tasks"
     },
-    { 
-      id: 2, 
-      title: "Calendar", 
-      icon: <Calendar size={20}  />, 
-      link: "/calendar",
-      description: "Visualize your tasks on a calendar"
+    {
+        id: 2,
+        title: "Calendar",
+        icon: <Calendar size={20} />,
+        link: "/calendar",
+        description: "Visualize your tasks on a calendar"
     },
-    { 
-      id: 3, 
-      title: "Important", 
-      icon: <Star size={20} className="text-orange-500" />, 
-      link: "/important",
-      description: "Focus on your high-priority tasks"
+    {
+        id: 3,
+        title: "Important",
+        icon: <Star size={20} className="text-orange-500" />,
+        link: "/important",
+        description: "Focus on your high-priority tasks"
     },
-    { 
-      id: 4, 
-      title: "Completed", 
-      icon: <CheckCircle size={20} className="text-green-500" />, 
-      link: "/completed",
-      description: "Review your accomplished tasks"
+    {
+        id: 4,
+        title: "Completed",
+        icon: <CheckCircle size={20} className="text-green-500" />,
+        link: "/completed",
+        description: "Review your accomplished tasks"
     },
-    { 
-      id: 5, 
-      title: "Incomplete", 
-      icon: <XCircle size={20} className="text-blue-500" />, 
-      link: "/incomplete",
-      description: "Manage tasks that need attention"
+    {
+        id: 5,
+        title: "Incomplete",
+        icon: <XCircle size={20} className="text-blue-500" />,
+        link: "/incomplete",
+        description: "Manage tasks that need attention"
     },
-    { 
-      id: 6, 
-      title: "Missed", 
-      icon: <AlertCircle size={20} className="text-red-500" />, 
-      link: "/missed",
-      description: "Address overdue tasks"
+    {
+        id: 6,
+        title: "Missed",
+        icon: <AlertCircle size={20} className="text-red-500" />,
+        link: "/missed",
+        description: "Address overdue tasks"
     },
-  ]
+]
 export default function Component() {
     const pathName = usePathname()
     const { user } = useUser()
@@ -164,7 +164,11 @@ export default function Component() {
                             </div>
                         </SheetContent>
                     </Sheet>
-                    <h1 className="text-lg font-semibold">Task Manager</h1>
+                    <h1 className="text-lg font-semibold">
+                        <Link href="/" >
+                            Task Manager
+                        </Link>
+                    </h1>
                     <ModeToggle />
                 </div>
             </div>

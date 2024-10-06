@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useGlobalUpdate } from "@/lib/hooks"
 import { Task } from "@/lib/types"
-import { Loader, Star, CheckCircle2, Circle, X } from "lucide-react"
+import { Loader, Star, CheckCircle2, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { isAfter, startOfDay } from "date-fns"
 import toast from "react-hot-toast"
@@ -33,12 +33,16 @@ const MAX_DESCRIPTION_LENGTH = 500
 export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }: BottomSheetTaskCreatorProps) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [date, setDate] = useState<Date | undefined>(initialDate || new Date())
+  const [date, setDate] = useState<Date>(new Date())
   const [isCompleted, setIsCompleted] = useState(false)
   const [isImportant, setIsImportant] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
 
   const { createTask } = useGlobalUpdate()
+
+  useEffect(() => {
+    setDate(initialDate || new Date())
+  }, [initialDate, isOpen])
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -50,7 +54,9 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
   }
 
   const handleDateChange = (selectedDate: Date | undefined) => {
-    setDate(selectedDate)
+    if (selectedDate) {
+      setDate(selectedDate)
+    }
   }
 
   const handleCheckboxChange = (field: string) => (checked: boolean) => {
@@ -74,19 +80,13 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
       return
     }
 
-    if (!date) {
-      toast.error("Date is required")
-      return
-    }
-
     setIsCreating(true)
 
-    const formattedDate = date ? date.toISOString() : ""
     const newTask: Task = {
       id: "none",
       title,
       description,
-      date: formattedDate,
+      date: date.toISOString(),
       isCompleted,
       isImportant,
       createdAt: "none",
@@ -104,7 +104,7 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
 
   const getTaskColor = () => {
     if (isCompleted) return 'bg-green-500'
-    if (date && isAfter(startOfDay(new Date()), startOfDay(date))) return 'bg-red-500'
+    if (isAfter(startOfDay(new Date()), startOfDay(date))) return 'bg-red-500'
     if (isImportant) return 'bg-orange-500'
     return 'bg-blue-500'
   }

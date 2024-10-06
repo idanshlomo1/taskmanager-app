@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { ModeToggle } from '@/components/ModeToggle'
 import Sidebar from '@/components/Sidebar'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
     title: "Task Manager Application",
@@ -26,8 +27,11 @@ const RootLayout = ({
                     <div className="flex-1 flex flex-col overflow-hidden">
                         <div className='hidden md:block'>
                             <header className="flex justify-between items-center p-4 bg-background/80 backdrop-blur-sm border-b">
-                                <h1 className="text-2xl font-bold text-center">Task Manager</h1>
-                                <div className="flex items-center space-x-4">
+                                <h1 className="text-2xl font-bold text-center">
+                                    <Link href="/" >
+                                        Task Manager
+                                    </Link>
+                                </h1>                                <div className="flex items-center space-x-4">
                                     <ModeToggle />
                                 </div>
                             </header>
