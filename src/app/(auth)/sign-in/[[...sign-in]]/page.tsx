@@ -19,6 +19,7 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Replace `any` with unknown and handle the error properly.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
@@ -39,13 +40,19 @@ export default function SignIn() {
         console.error('Sign in failed', result)
         setError('Sign in failed. Please check your credentials.')
       }
-    } catch (err: any) {
-      console.error('Error:', err.errors[0].message)
-      setError(err.errors[0].message)
+    } catch (err: unknown) {
+      if (err instanceof Error && 'errors' in err) {
+        const customErr = err as { errors: [{ message: string }] }
+        console.error('Error:', customErr.errors[0].message)
+        setError(customErr.errors[0].message)
+      } else {
+        console.error('Unexpected error', err)
+      }
     } finally {
       setIsLoading(false)
     }
   }
+
 
   return (
     <div className="min-h-screen py-36 flex items-center w-full animated-gradient justify-center px-4 sm:px-6 lg:px-8">

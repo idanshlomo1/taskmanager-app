@@ -27,6 +27,7 @@ export default function ForgotPassword() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Replace `any` with unknown and add type assertions where necessary.
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isLoaded) return
@@ -39,9 +40,14 @@ export default function ForgotPassword() {
       })
       setSuccessfulCreation(true)
       setError('')
-    } catch (err: any) {
-      console.error('Error:', err.errors[0].longMessage)
-      setError(err.errors[0].longMessage)
+    } catch (err: unknown) {
+      if (err instanceof Error && 'errors' in err) {
+        const customErr = err as { errors: [{ longMessage: string }] }
+        console.error('Error:', customErr.errors[0].longMessage)
+        setError(customErr.errors[0].longMessage)
+      } else {
+        console.error('Unexpected error', err)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -66,13 +72,19 @@ export default function ForgotPassword() {
         console.log(result)
         setError('Password reset failed. Please try again.')
       }
-    } catch (err: any) {
-      console.error('Error:', err.errors[0].longMessage)
-      setError(err.errors[0].longMessage)
+    } catch (err: unknown) {
+      if (err instanceof Error && 'errors' in err) {
+        const customErr = err as { errors: [{ longMessage: string }] }
+        console.error('Error:', customErr.errors[0].longMessage)
+        setError(customErr.errors[0].longMessage)
+      } else {
+        console.error('Unexpected error', err)
+      }
     } finally {
       setIsLoading(false)
     }
   }
+
 
   return (
     <div className="min-h-screen py-36 flex items-center w-full animated-gradient justify-center px-4 sm:px-6 lg:px-8">

@@ -53,10 +53,10 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen pt-24 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       <motion.div
         className="absolute inset-0 z-0"
-       
+
       />
       <div className="container mx-auto px-4 py-12 relative z-10">
         <motion.div
