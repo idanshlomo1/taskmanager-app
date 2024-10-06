@@ -133,7 +133,7 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center w-full animated-gradient justify-center">
+    <div className="min-h-screen py-36 flex items-center w-full animated-gradient justify-center px-4 sm:px-6 lg:px-8">
       <AnimatePresence>
         {showContent && (
           <motion.div
