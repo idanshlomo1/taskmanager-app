@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,6 +13,13 @@ import { Loader, Star, CheckCircle2, Circle, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { isAfter, startOfDay } from "date-fns"
 import toast from "react-hot-toast"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 
 interface BottomSheetTaskCreatorProps {
   isOpen: boolean
@@ -32,18 +39,6 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
   const [isCreating, setIsCreating] = useState(false)
 
   const { createTask } = useGlobalUpdate()
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen])
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -114,103 +109,87 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
     return 'bg-blue-500'
   }
 
-  if (!isOpen) return null
-
   return (
-    <>
-      <div
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div
-        className={cn(
-          "fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-xl shadow-lg transform transition-transform duration-300 ease-in-out",
-          isOpen ? "translate-y-0" : "translate-y-full"
-        )}
-      >
-        <div className="p-4 max-h-[80vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-primary">Create New Task</h2>
-            <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <form className="flex gap-4" onSubmit={handleSubmit}>
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent side="bottom" className="sm:max-w-2xl rounded-lg sm:mx-auto">
+        <SheetHeader>
+          <SheetTitle>Create New Task</SheetTitle>
+          <SheetDescription>Add a new task to your list</SheetDescription>
+        </SheetHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div className="flex gap-4">
             <div className={cn("w-2 self-stretch rounded-l-md", getTaskColor())} />
             <div className="flex-1 space-y-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="title" className="text-primary">Title</Label>
+              <div>
+                <Label htmlFor="title">Title</Label>
                 <Input
-                  className="text-primary bg-background"
-                  type="text"
                   id="title"
                   value={title}
-                  placeholder="e.g., Clean my room"
                   onChange={handleChange("title")}
+                  placeholder="e.g., Clean my room"
+                  maxLength={MAX_TITLE_LENGTH}
                 />
-                <span className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground mt-1">
                   {title.length}/{MAX_TITLE_LENGTH} characters
-                </span>
+                </p>
               </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="description" className="text-primary">Description</Label>
+              <div>
+                <Label htmlFor="description">Description</Label>
                 <Textarea
-                  className="text-primary bg-background"
                   id="description"
                   value={description}
-                  rows={4}
-                  placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
                   onChange={handleChange("description")}
+                  placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
+                  maxLength={MAX_DESCRIPTION_LENGTH}
                 />
-                <span className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground mt-1">
                   {description.length}/{MAX_DESCRIPTION_LENGTH} characters
-                </span>
+                </p>
               </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="date" className="text-primary">Due date</Label>
+              <div>
+                <Label>Due date</Label>
                 <DatePickerDemo date={date} onDateChange={handleDateChange} />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center space-x-2">
                 <Checkbox
                   id="isCompleted"
                   checked={isCompleted}
                   onCheckedChange={handleCheckboxChange("isCompleted")}
                 />
-                <Label htmlFor="isCompleted" className="text-primary flex items-center gap-2">
+                <Label htmlFor="isCompleted" className="flex items-center space-x-2">
                   {isCompleted ? (
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                   ) : (
                     <Circle className="h-4 w-4 text-muted-foreground" />
                   )}
-                  Completed Task
+                  <span>Completed Task</span>
                 </Label>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center space-x-2">
                 <Checkbox
                   id="isImportant"
                   checked={isImportant}
                   onCheckedChange={handleCheckboxChange("isImportant")}
                 />
-                <Label htmlFor="isImportant" className="text-primary flex items-center gap-2">
+                <Label htmlFor="isImportant" className="flex items-center space-x-2">
                   <Star className={cn("h-4 w-4", isImportant ? "text-orange-500 fill-orange-500" : "text-muted-foreground")} />
-                  Important Task
+                  <span>Important Task</span>
                 </Label>
               </div>
-              <Button 
-                className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90 w-full" 
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={isCreating || title.length > MAX_TITLE_LENGTH || description.length > MAX_DESCRIPTION_LENGTH}
               >
                 {isCreating ? (
-                  <Loader size={20} className="animate-spin" />
-                ) : (
-                  "Create"
-                )}
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                Create Task
               </Button>
             </div>
-          </form>
-        </div>
-      </div>
-    </>
+          </div>
+        </form>
+      </SheetContent>
+    </Sheet>
   )
 }
