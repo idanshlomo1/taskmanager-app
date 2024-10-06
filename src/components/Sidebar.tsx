@@ -72,7 +72,6 @@ export default function Component() {
                             </Avatar>
                             <div>
                                 <p className="font-medium text-primary">{firstName} {lastName}</p>
-                                <p className="text-sm text-muted-foreground">{user?.username || 'Task Manager'}</p>
                             </div>
                         </div>
                     </div>
@@ -127,7 +126,6 @@ export default function Component() {
                                         </SheetClose>
                                         <div>
                                             <p className="font-medium">{firstName} {lastName}</p>
-                                            <p className="text-sm text-muted-foreground">Task Manager</p>
                                         </div>
                                     </div>
                                 </div>

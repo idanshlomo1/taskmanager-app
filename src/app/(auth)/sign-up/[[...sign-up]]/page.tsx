@@ -16,7 +16,6 @@ const signUpSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
-  username: z.string().min(3, 'Username must be at least 3 characters'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
@@ -30,7 +29,6 @@ export default function SignUp() {
     firstName: '',
     lastName: '',
     email: '',
-    username: '',
     password: '',
     confirmPassword: ''
   })
@@ -59,18 +57,28 @@ export default function SignUp() {
 
     try {
       const validatedData = signUpSchema.parse(formData)
-      await signUp.create({
+      
+      // Attempt to create the user
+      const result = await signUp.create({
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
         emailAddress: validatedData.email,
-        username: validatedData.username,
         password: validatedData.password,
       })
 
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-      setVerifying(true)
-    } catch (err) {
+      // Check if there's an error related to password strength
+      if (result.status === "complete") {
+        // Sign up was successful, proceed with email verification
+        await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+        setVerifying(true)
+      } else {
+        // Handle other potential issues
+        console.error('Unexpected result:', result)
+        setErrors({ form: 'An unexpected error occurred during sign up.' })
+      }
+    } catch (err: any) {
       if (err instanceof z.ZodError) {
+        // Handle Zod validation errors (same as before)
         const fieldErrors = err.flatten().fieldErrors
         const simplifiedErrors: Record<string, string> = {}
         for (const key in fieldErrors) {
@@ -79,8 +87,19 @@ export default function SignUp() {
           }
         }
         setErrors(simplifiedErrors)
+      } else if (err.errors && err.errors.length > 0) {
+        // Handle Clerk API errors
+        const clerkError = err.errors[0]
+        if (clerkError.code === 'form_password_pwned') {
+          setErrors({ password: 'This password was found in a data breach. Please choose a stronger password.' })
+        } else if (clerkError.code === 'form_password_validation_failed') {
+          setErrors({ password: clerkError.longMessage || 'Password is too weak. Please choose a stronger password.' })
+        } else {
+          console.error('Clerk Error:', err)
+          setErrors({ form: clerkError.longMessage || 'An unexpected error occurred' })
+        }
       } else {
-        console.error('Clerk Error:', err)
+        console.error('Unknown Error:', err)
         setErrors({ form: 'An unexpected error occurred' })
       }
     } finally {
@@ -203,19 +222,6 @@ export default function SignUp() {
                         className="bg-background/50 border-primary/20"
                       />
                       {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="username">Username</Label>
-                      <Input
-                        id="username"
-                        name="username"
-                        type="text"
-                        value={formData.username}
-                        onChange={handleChange}
-                        placeholder="Choose a username"
-                        className="bg-background/50 border-primary/20"
-                      />
-                      {errors.username && <p className="text-sm text-destructive">{errors.username}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="password">Password</Label>

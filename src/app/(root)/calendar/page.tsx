@@ -11,6 +11,7 @@ import { useGlobalState } from '@/lib/hooks'
 import { cn } from '@/lib/utils'
 import TaskItem from '@/components/TaskItem'
 import BottomSheetTaskCreator from '@/components/BottomSheetTaskCreator'
+import { motion } from 'framer-motion'
 
 export default function CalendarView() {
     const [currentDate, setCurrentDate] = useState(new Date())
@@ -63,11 +64,18 @@ export default function CalendarView() {
     }
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold tracking-tight">Calendar</h1>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-                    <Button onClick={() => setIsBottomSheetOpen(true)} className="w-full sm:w-auto">
+        <motion.div
+            className="space-y-4 pb-20 md:pb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4 md:gap-0">
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary text-center md:text-left w-full md:w-auto">
+                    Calendar
+                </h1>
+                <div className="hidden md:block">
+                    <Button onClick={() => setIsBottomSheetOpen(true)}>
                         <Plus className="mr-2 h-4 w-4" /> New Task
                     </Button>
                 </div>
@@ -130,7 +138,7 @@ export default function CalendarView() {
                             const hasPastDueTask = dayTasks.some(task => isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) && !task.isCompleted)
                             const hasImportantTask = dayTasks.some(task => task.isImportant && !task.isCompleted)
                             const hasInProgressTask = dayTasks.some(task => !task.isCompleted && !task.isImportant && !hasPastDueTask)
-                            
+
                             const getBorderColor = () => {
                                 if (hasPastDueTask) return 'border-l-red-500'
                                 if (hasImportantTask) return 'border-l-orange-500'
@@ -179,9 +187,9 @@ export default function CalendarView() {
                                                     <div key={index} className={cn(
                                                         "text-[0.6rem] sm:text-xs truncate text-left",
                                                         task.isCompleted ? "text-green-500" :
-                                                        isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) ? "text-red-500 font-semibold" :
-                                                        task.isImportant ? "text-orange-500 font-semibold" :
-                                                        "text-blue-500"
+                                                            isAfter(startOfDay(new Date()), startOfDay(parseISO(task.date))) ? "text-red-500 font-semibold" :
+                                                                task.isImportant ? "text-orange-500 font-semibold" :
+                                                                    "text-blue-500"
                                                     )}>
                                                         {task.title}
                                                     </div>
@@ -229,6 +237,17 @@ export default function CalendarView() {
                 onClose={() => setIsBottomSheetOpen(false)}
                 initialDate={selectedDate}
             />
-        </div>
+
+            {/* Fixed "New Task" button for small and medium screens */}
+            <div className="fixed bottom-4 right-4 left-4 z-10 md:hidden">
+                <Button
+                    onClick={() => setIsBottomSheetOpen(true)}
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
+                    size="lg"
+                >
+                    <Plus className="mr-2 h-5 w-5" /> New Task
+                </Button>
+            </div>
+        </motion.div>
     )
 }

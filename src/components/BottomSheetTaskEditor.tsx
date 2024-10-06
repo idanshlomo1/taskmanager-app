@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useGlobalUpdate } from "@/lib/hooks"
 import { Task } from "@/lib/types"
-import { Loader, Star, CheckCircle2, Circle, X } from "lucide-react"
+import { Loader, Star, CheckCircle2, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { isAfter, startOfDay } from "date-fns"
 import toast from "react-hot-toast"
@@ -21,91 +20,72 @@ import {
 } from "@/components/ui/sheet"
 import DatePickerDemo from "./DatePickerDemo"
 
-interface BottomSheetTaskCreatorProps {
+interface BottomSheetTaskEditorProps {
+  task: Task
   isOpen: boolean
   onClose: () => void
-  initialDate?: Date
+  onUpdateTask: (task: Task) => Promise<void>
 }
 
 const MAX_TITLE_LENGTH = 50
 const MAX_DESCRIPTION_LENGTH = 500
 
-export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }: BottomSheetTaskCreatorProps) {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [date, setDate] = useState<Date | undefined>(initialDate || new Date())
-  const [isCompleted, setIsCompleted] = useState(false)
-  const [isImportant, setIsImportant] = useState(false)
-  const [isCreating, setIsCreating] = useState(false)
-
-  const { createTask } = useGlobalUpdate()
+export default function BottomSheetTaskEditor({ task, isOpen, onClose, onUpdateTask }: BottomSheetTaskEditorProps) {
+  const [editedTask, setEditedTask] = useState(task)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value
     if (field === "title" && value.length <= MAX_TITLE_LENGTH) {
-      setTitle(value)
+      setEditedTask(prev => ({ ...prev, title: value }))
     } else if (field === "description" && value.length <= MAX_DESCRIPTION_LENGTH) {
-      setDescription(value)
+      setEditedTask(prev => ({ ...prev, description: value }))
     }
   }
 
   const handleDateChange = (selectedDate: Date | undefined) => {
-    setDate(selectedDate)
+    setEditedTask(prev => ({ ...prev, date: selectedDate ? selectedDate.toISOString() : "" }))
   }
 
   const handleCheckboxChange = (field: string) => (checked: boolean) => {
-    if (field === "isCompleted") {
-      setIsCompleted(checked)
-    } else if (field === "isImportant") {
-      setIsImportant(checked)
-    }
+    setEditedTask(prev => ({ ...prev, [field]: checked }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!title || title.length < 3) {
+    if (!editedTask.title || editedTask.title.length < 3) {
       toast.error("Title must be at least 3 characters long")
       return
     }
 
-    if (!description) {
+    if (!editedTask.description) {
       toast.error("Description is required")
       return
     }
 
-    if (!date) {
+    if (!editedTask.date) {
       toast.error("Date is required")
       return
     }
 
-    setIsCreating(true)
+    setIsUpdating(true)
 
-    const formattedDate = date ? date.toISOString() : ""
-    const newTask: Task = {
-      id: "none",
-      title,
-      description,
-      date: formattedDate,
-      isCompleted,
-      isImportant,
-      createdAt: "none",
-      updatedAt: "none",
-      userId: "none",
+    try {
+      await onUpdateTask(editedTask)
+      toast.success("Task updated successfully")
+      onClose()
+    } catch (error) {
+      toast.error("Failed to update task")
+    } finally {
+      setIsUpdating(false)
     }
-
-    if (createTask) {
-      await createTask(newTask)
-    }
-
-    setIsCreating(false)
-    onClose()
   }
 
   const getTaskColor = () => {
-    if (isCompleted) return 'bg-green-500'
-    if (date && isAfter(startOfDay(new Date()), startOfDay(date))) return 'bg-red-500'
-    if (isImportant) return 'bg-orange-500'
+    if (editedTask.isCompleted) return 'bg-green-500'
+    if (editedTask.date && isAfter(startOfDay(new Date()), startOfDay(new Date(editedTask.date)))) return 'bg-red-500'
+    if (editedTask.isImportant) return 'bg-orange-500'
     return 'bg-blue-500'
   }
 
@@ -113,8 +93,8 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className="sm:max-w-2xl rounded-lg sm:mx-auto">
         <SheetHeader>
-          <SheetTitle>Create New Task</SheetTitle>
-          <SheetDescription>Add a new task to your list</SheetDescription>
+          <SheetTitle>Edit Task</SheetTitle>
+          <SheetDescription>Make changes to your task</SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="flex gap-4">
@@ -124,40 +104,40 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
                 <Label htmlFor="title">Title</Label>
                 <Input
                   id="title"
-                  value={title}
+                  value={editedTask.title}
                   onChange={handleChange("title")}
                   placeholder="e.g., Clean my room"
                   maxLength={MAX_TITLE_LENGTH}
                 />
                 <p className="text-sm text-muted-foreground mt-1">
-                  {title.length}/{MAX_TITLE_LENGTH} characters
+                  {editedTask.title.length}/{MAX_TITLE_LENGTH} characters
                 </p>
               </div>
               <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  value={description}
+                  value={editedTask.description}
                   onChange={handleChange("description")}
                   placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
                   maxLength={MAX_DESCRIPTION_LENGTH}
                 />
                 <p className="text-sm text-muted-foreground mt-1">
-                  {description.length}/{MAX_DESCRIPTION_LENGTH} characters
+                  {editedTask.description.length}/{MAX_DESCRIPTION_LENGTH} characters
                 </p>
               </div>
               <div>
                 <Label>Due date</Label>
-                <DatePickerDemo date={date} onDateChange={handleDateChange} />
+                <DatePickerDemo date={editedTask.date ? new Date(editedTask.date) : undefined} onDateChange={handleDateChange} />
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="isCompleted"
-                  checked={isCompleted}
+                  checked={editedTask.isCompleted}
                   onCheckedChange={handleCheckboxChange("isCompleted")}
                 />
                 <Label htmlFor="isCompleted" className="flex items-center space-x-2">
-                  {isCompleted ? (
+                  {editedTask.isCompleted ? (
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                   ) : (
                     <Circle className="h-4 w-4 text-muted-foreground" />
@@ -168,23 +148,23 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="isImportant"
-                  checked={isImportant}
+                  checked={editedTask.isImportant}
                   onCheckedChange={handleCheckboxChange("isImportant")}
                 />
                 <Label htmlFor="isImportant" className="flex items-center space-x-2">
-                  <Star className={cn("h-4 w-4", isImportant ? "text-orange-500 fill-orange-500" : "text-muted-foreground")} />
+                  <Star className={cn("h-4 w-4", editedTask.isImportant ? "text-orange-500 fill-orange-500" : "text-muted-foreground")} />
                   <span>Important Task</span>
                 </Label>
               </div>
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isCreating || title.length > MAX_TITLE_LENGTH || description.length > MAX_DESCRIPTION_LENGTH}
+                disabled={isUpdating || editedTask.title.length > MAX_TITLE_LENGTH || editedTask.description.length > MAX_DESCRIPTION_LENGTH}
               >
-                {isCreating ? (
+                {isUpdating ? (
                   <Loader className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
-                Create Task
+                Update Task
               </Button>
             </div>
           </div>

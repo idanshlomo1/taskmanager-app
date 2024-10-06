@@ -13,7 +13,7 @@ import { ArrowRight, Loader2 } from 'lucide-react'
 
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn()
-  const [emailOrUsername, setEmailOrUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -28,7 +28,7 @@ export default function SignIn() {
 
     try {
       const result = await signIn.create({
-        identifier: emailOrUsername,
+        identifier: email,
         password,
       })
 
@@ -60,18 +60,19 @@ export default function SignIn() {
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl font-bold text-primary">Sign In</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Enter your credentials to access your account
+              Enter your email and password to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="emailOrUsername">Email or Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="emailOrUsername"
-                  placeholder="Enter your email or username"
-                  value={emailOrUsername}
-                  onChange={(e) => setEmailOrUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-background/50 border-primary/20"
                 />
               </div>

@@ -3,16 +3,17 @@
 import React, { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { format, isAfter, startOfDay } from 'date-fns'
-import { Star, ChevronDown, ChevronUp, Calendar, Circle, CheckCircle2, Loader2 } from 'lucide-react'
+import { Star, ChevronDown, ChevronUp, Calendar, Circle, CheckCircle2, Loader2, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { Task } from '@/lib/types'
 import { useGlobalUpdate } from '@/lib/hooks'
-import EditTaskDialog from './EditTaskDialog'
-import DeleteTaskDialog from './DeleteTaskDialog'
+import BottomSheetTaskEditor from './BottomSheetTaskEditor'
+import BottomSheetTaskDeleter from './BottomSheetTaskDeleter'
 import { useToast } from '@/hooks/use-toast'
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 interface TaskItemProps {
     task: Task
@@ -23,6 +24,7 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
     const [task, setTask] = useState(initialTask)
     const [isLoading, setIsLoading] = useState(false)
     const [isExpanded, setIsExpanded] = useState(initialIsExpanded)
+    const [isEditSheetOpen, setIsEditSheetOpen] = useState(false)
     const { updateTask, deleteTask } = useGlobalUpdate()
     const { toast } = useToast()
 
@@ -142,13 +144,13 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
                             )}
                         </div>
                         <div className="flex flex-col items-end gap-2">
-                            <Badge 
-                                variant={task.isCompleted ? "secondary" : "default"}
+                            <Badge
+                                variant={task.isCompleted ? "secondary" : "outline"}
                                 className={cn(
-                                    "whitespace-nowrap",
-                                    task.isCompleted ? "bg-green-100 text-green-800" : 
-                                    isPastDue ? "bg-red-100 text-red-800" : 
-                                    task.isImportant ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800"
+                                    "whitespace-nowrap cursor-default",
+                                    task.isCompleted ? "bg-green-100 text-green-800" :
+                                        isPastDue ? "bg-red-100 text-red-800" :
+                                            task.isImportant ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800"
                                 )}
                             >
                                 {task.isCompleted ? "Completed" : isPastDue ? "Past Due" : task.isImportant ? "Priority" : "In Progress"}
@@ -186,11 +188,34 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
                         >
                             <Star className={cn("h-4 w-4", task.isImportant ? "fill-orange-500 text-orange-500" : "text-muted-foreground")} />
                         </Button>
-                        <EditTaskDialog task={task} onUpdateTask={handleUpdateTask} disabled={isLoading} />
-                        <DeleteTaskDialog task={task} onDelete={handleDelete} disabled={isLoading} />
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setIsEditSheetOpen(true)}
+                                        disabled={isLoading}
+                                        className="hover:bg-primary/10"
+                                    >
+                                        <Pencil className="h-4 w-4 text-muted-foreground" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Edit Task</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <BottomSheetTaskDeleter task={task} onDelete={handleDelete} disabled={isLoading} />
                     </div>
                 </CardFooter>
             </Card>
+            <BottomSheetTaskEditor
+                task={task}
+                isOpen={isEditSheetOpen}
+                onClose={() => setIsEditSheetOpen(false)}
+                onUpdateTask={handleUpdateTask}
+            />
         </motion.div>
     )
 }

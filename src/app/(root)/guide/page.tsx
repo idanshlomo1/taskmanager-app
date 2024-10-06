@@ -9,12 +9,16 @@ import { cn } from "@/lib/utils"
 export default function GuidePage() {
   return (
     <motion.div 
-      className="space-y-4"
+      className="space-y-4 pb-20 md:pb-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-4xl font-bold tracking-tight">How to Use the App</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4 md:gap-0">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary text-center md:text-left w-full md:w-auto">
+          How to Use the App
+        </h1>
+      </div>
       <ScrollArea className="h-[calc(100vh-12rem)]">
         <div className="grid gap-6 pr-4">
           <GuideCard
