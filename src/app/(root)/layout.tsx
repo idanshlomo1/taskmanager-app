@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import { Toaster } from '@/components/ui/toaster'
 import { ModeToggle } from '@/components/ModeToggle'
 import Sidebar from '@/components/Sidebar'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
     title: "Task Manager Application",
@@ -33,6 +34,9 @@ const RootLayout = ({
                         </div>
                         <main className="flex-1 overflow-auto py-24 md:py-6 p-6">
                             {children}
+                            <div className='hidden md:block'>
+                                <Footer />
+                            </div>
                         </main>
                     </div>
                 </div>
