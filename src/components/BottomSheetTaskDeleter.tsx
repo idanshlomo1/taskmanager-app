@@ -16,7 +16,7 @@ import {
 
 interface BottomSheetTaskDeleterProps {
   task: Task
-  onDelete: () => Promise<void>
+  onDelete: (id: string) => Promise<void>
   disabled?: boolean
 }
 
@@ -26,9 +26,13 @@ export default function BottomSheetTaskDeleter({ task, onDelete, disabled = fals
 
   const handleDelete = async () => {
     setIsLoading(true)
-    await onDelete()
-    setIsLoading(false)
     setIsOpen(false)
+    
+    // Delay the actual deletion to allow time for the exit animation
+    setTimeout(async () => {
+      await onDelete(task.id)
+      setIsLoading(false)
+    }, 300) // Adjust this delay to match your animation duration
   }
 
   return (

@@ -64,24 +64,24 @@ export default function Tasks({ tasks }: TasksProps) {
       <ScrollArea className="flex-grow md:h-[calc(100vh-16rem)]">
         <div className="p-4">
           {isInitialLoading ? (
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4">
               {[...Array(3)].map((_, index) => (
                 <TaskItemSkeleton key={index} />
               ))}
             </div>
           ) : filteredTasks.length > 0 ? (
             <AnimatePresence initial={false}>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
-              >
-                {filteredTasks.map((task) => (
-                  <TaskItem key={task.id} task={task} />
-                ))}
-              </motion.div>
+              {filteredTasks.map((task) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: 16 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TaskItem task={task} />
+                </motion.div>
+              ))}
             </AnimatePresence>
           ) : (
             <p className="text-center text-muted-foreground py-8">

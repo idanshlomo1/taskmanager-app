@@ -1,12 +1,15 @@
 'use client'
 
-import { useAuth, useClerk } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { HomeIcon, LogOutIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useClerk } from "@clerk/nextjs"
 
-export default function AuthenticatedWarning() {
-  const { isSignedIn } = useAuth()
+interface AuthenticatedWarningClientProps {
+  isSignedIn: boolean;
+}
+
+export default function AuthenticatedWarningClient({ isSignedIn }: AuthenticatedWarningClientProps) {
   const { signOut } = useClerk()
   const router = useRouter()
 
@@ -30,7 +33,7 @@ export default function AuthenticatedWarning() {
           <Button
             onClick={handleGoHome}
             variant="outline"
-            className="bg-yellow-200 hover:bg-yellow-300 text-yellow-800 hover:text-yellow-8"
+            className="bg-yellow-200 hover:bg-yellow-300 text-yellow-800 hover:text-yellow-800"
           >
             <HomeIcon className="w-4 h-4 mr-2" />
             Go to Home

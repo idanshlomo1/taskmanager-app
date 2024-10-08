@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -37,6 +38,7 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
   const [isCompleted, setIsCompleted] = useState(false)
   const [isImportant, setIsImportant] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
 
   const { createTask } = useGlobalUpdate()
 
@@ -67,6 +69,14 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
     }
   }
 
+  const resetForm = () => {
+    setTitle("")
+    setDescription("")
+    setDate(new Date())
+    setIsCompleted(false)
+    setIsImportant(false)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -83,14 +93,14 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
     setIsCreating(true)
 
     const newTask: Task = {
-      id: "none",
+      id: "temp_" + Date.now(),
       title,
       description,
       date: date.toISOString(),
       isCompleted,
       isImportant,
-      createdAt: "none",
-      updatedAt: "none",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       userId: "none",
     }
 
@@ -99,7 +109,14 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
     }
 
     setIsCreating(false)
-    onClose()
+    setIsClosing(true)
+    
+    // Delay closing the sheet to allow the new task to appear in the UI
+    setTimeout(() => {
+      resetForm()
+      onClose()
+      setIsClosing(false)
+    }, 300)
   }
 
   const getTaskColor = () => {
@@ -110,85 +127,101 @@ export default function BottomSheetTaskCreator({ isOpen, onClose, initialDate }:
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="sm:max-w-2xl rounded-lg sm:mx-auto">
-        <SheetHeader>
-          <SheetTitle>Create New Task</SheetTitle>
-          <SheetDescription>Add a new task to your list</SheetDescription>
-        </SheetHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="flex gap-4">
-            <div className={cn("w-2 self-stretch rounded-l-md", getTaskColor())} />
-            <div className="flex-1 space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={handleChange("title")}
-                  placeholder="e.g., Clean my room"
-                  maxLength={MAX_TITLE_LENGTH}
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  {title.length}/{MAX_TITLE_LENGTH} characters
-                </p>
-              </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={handleChange("description")}
-                  placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
-                  maxLength={MAX_DESCRIPTION_LENGTH}
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  {description.length}/{MAX_DESCRIPTION_LENGTH} characters
-                </p>
-              </div>
-              <div>
-                <Label>Due date</Label>
-                <DatePickerDemo date={date} onDateChange={handleDateChange} />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isCompleted"
-                  checked={isCompleted}
-                  onCheckedChange={handleCheckboxChange("isCompleted")}
-                />
-                <Label htmlFor="isCompleted" className="flex items-center space-x-2">
-                  {isCompleted ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <Circle className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  <span>Completed Task</span>
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="isImportant"
-                  checked={isImportant}
-                  onCheckedChange={handleCheckboxChange("isImportant")}
-                />
-                <Label htmlFor="isImportant" className="flex items-center space-x-2">
-                  <Star className={cn("h-4 w-4", isImportant ? "text-orange-500 fill-orange-500" : "text-muted-foreground")} />
-                  <span>Important Task</span>
-                </Label>
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isCreating || title.length > MAX_TITLE_LENGTH || description.length > MAX_DESCRIPTION_LENGTH}
-              >
-                {isCreating ? (
-                  <Loader className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                Create Task
-              </Button>
-            </div>
-          </div>
-        </form>
+    <Sheet open={isOpen} onOpenChange={(open) => {
+      if (!open && !isClosing) {
+        onClose()
+      }
+    }}>
+      <SheetContent side="bottom" className="sm:max-w-2xl rounded-lg sm:mx-auto p-0 overflow-hidden">
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              transition={{ duration: 0.3 }}
+              className="p-6"
+            >
+              <SheetHeader>
+                <SheetTitle>Create New Task</SheetTitle>
+                <SheetDescription>Add a new task to your list</SheetDescription>
+              </SheetHeader>
+              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                <div className="flex gap-4">
+                  <div className={cn("w-2 self-stretch rounded-l-md", getTaskColor())} />
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        id="title"
+                        value={title}
+                        onChange={handleChange("title")}
+                        placeholder="e.g., Clean my room"
+                        maxLength={MAX_TITLE_LENGTH}
+                      />
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {title.length}/{MAX_TITLE_LENGTH} characters
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={description}
+                        onChange={handleChange("description")}
+                        placeholder="e.g., Clean my room thoroughly including dusting and vacuuming"
+                        maxLength={MAX_DESCRIPTION_LENGTH}
+                      />
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {description.length}/{MAX_DESCRIPTION_LENGTH} characters
+                      </p>
+                    </div>
+                    <div>
+                      <Label>Due date</Label>
+                      <DatePickerDemo date={date} onDateChange={handleDateChange} />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="isCompleted"
+                        checked={isCompleted}
+                        onCheckedChange={handleCheckboxChange("isCompleted")}
+                      />
+                      <Label htmlFor="isCompleted" className="flex items-center space-x-2">
+                        {isCompleted ? (
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Circle className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span>Completed Task</span>
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="isImportant"
+                        checked={isImportant}
+                        onCheckedChange={handleCheckboxChange("isImportant")}
+                      />
+                      <Label htmlFor="isImportant" className="flex items-center space-x-2">
+                        <Star className={cn("h-4 w-4", isImportant ? "text-orange-500 fill-orange-500" : "text-muted-foreground")} />
+                        <span>Important Task</span>
+                      </Label>
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isCreating || title.length > MAX_TITLE_LENGTH || description.length > MAX_DESCRIPTION_LENGTH}
+                    >
+                      {isCreating ? (
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Create Task
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </SheetContent>
     </Sheet>
   )

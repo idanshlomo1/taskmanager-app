@@ -28,7 +28,7 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
     const { updateTask, deleteTask } = useGlobalUpdate()
     const { toast } = useToast()
 
-    const handleToggleCompleted = useCallback(async () => {
+    const handleToggleCompleted = async () => {
         setIsLoading(true)
         try {
             await updateTask({ ...task, isCompleted: !task.isCompleted })
@@ -42,9 +42,9 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
         } finally {
             setIsLoading(false)
         }
-    }, [task, updateTask, toast])
+    }
 
-    const handleToggleImportant = useCallback(async () => {
+    const handleToggleImportant = async () => {
         setIsLoading(true)
         try {
             await updateTask({ ...task, isImportant: !task.isImportant })
@@ -58,9 +58,9 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
         } finally {
             setIsLoading(false)
         }
-    }, [task, updateTask, toast])
+    }
 
-    const handleUpdateTask = useCallback(async (updatedTask: Task) => {
+    const handleUpdateTask = async (updatedTask: Task) => {
         setIsLoading(true)
         try {
             await updateTask(updatedTask)
@@ -74,9 +74,9 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
         } finally {
             setIsLoading(false)
         }
-    }, [updateTask, toast])
+    }
 
-    const handleDelete = useCallback(async () => {
+    const handleDelete = async () => {
         setIsLoading(true)
         try {
             await deleteTask(task.id)
@@ -89,7 +89,7 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
         } finally {
             setIsLoading(false)
         }
-    }, [deleteTask, task.id, toast])
+    }
 
     const toggleExpand = () => setIsExpanded(!isExpanded)
 
@@ -160,7 +160,7 @@ export default function TaskItem({ task: initialTask, isExpanded: initialIsExpan
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2 flex-wrap">
                         <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            {format(new Date(task.date), 'PPP')}
+                            Due {format(new Date(task.date), 'PPP')}
                         </div>
                     </div>
                 </CardContent>
